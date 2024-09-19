@@ -9,24 +9,21 @@ score = 100
 
 print("========== Set Up ==========")
 input(set_up_instructions + " ")
+  
+print("========== Math Quiz ==========")
 
-while True:   
+if float(input("1/5. What is 1 + 3? ")) != 4:
+    score -= 20
+if float(input("2/5. What is 4-2? ")) != 2:
+    score -= 20
+if float(input("3/5. What is 10 / 5?" )) != 2:
+    score -= 20
+if float(input("4/5. What is 3 x 5? ")) != 15:
+    score -= 20
+if float(input("5/5. What is 3 - 0? ")) != 3:
+    score -= 20
 
-    print("========== Math Quiz ==========")
-
-    if float(input("1/5. What is 1 + 3? ")) != 4:
-        score -= 20
-    if float(input("2/5. What is 4-2? ")) != 2:
-        score -= 20
-    if float(input("3/5. What is 10 / 5?" )) != 2:
-        score -= 20
-    if float(input("4/5. What is 3 x 5? ")) != 15:
-        score -= 20
-    if float(input("5/5. What is 3 - 0? ")) != 3:
-        score -= 20
-
-    print(f"Congratualations! You survived! Your final score is {score}%")
-    input('If you want to retake the quiz, type anything and then press "Enter"')
+print(f"Congratualations! You survived! Your final score is {score}%")
 
 
 
