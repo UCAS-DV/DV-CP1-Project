@@ -31,7 +31,7 @@ def shiftLetter(character, shift):
         character_value = ord(character)
         if (character_value + shift) > 90:
             character = 65
-            shift = 90 - character_value
+            shift = (character_value + shift) - 91
             return(chr(character + shift))
         return chr(character_value + shift)
     else:
