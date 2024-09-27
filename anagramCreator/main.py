@@ -1,22 +1,48 @@
 import random
 
-def GenerateOrder(length):
+def GenerateOrder(word):
+    order = []
     iteration = 0
-    order = [-1]
-    random_num = random.randint(0, length-1)
-    while iteration < length:
-        if iteration == 0:
-            order[0] = random_num
-        else:
-            order.append(random_num)
-        iteration += 1
-        print(order)
-            
-
-def GenerateAnagram(word):
     for letter in word:
-        anagram = word[random.randint(0,word.len() - 1)]
-    return anagram
+        order.append(iteration)
+        iteration += 1
+    
+    for position in order:
+        random_position = random.randint(0,len(order)-1)
+        entry = order[position]
+        entry_for_swap = order[random_position]
+        order[position] = entry_for_swap
+        order[random_position] = entry
+          
+    return order
 
-GenerateOrder(7)
+def GenerateAnagram(name):
+    anagram_name = ""
+    anagram_order = GenerateOrder(name)
+
+    for letter in anagram_order:
+        anagram_name += name[anagram_order[letter]]
+
+    return anagram_name
+
+def GenerateUniqueAnagram(list,repeat):
+    for word in list:
+        if word == repeat:
+            repeat = GenerateAnagram(repeat)
+            repeat = GenerateUniqueAnagram(list, repeat)
+        else:
+            continue
+    return repeat
+
+while True:
+    anagram_list = []
+    anagram = input('What word do you want to turn into an anagram? (If you want to exit, type "_exit") ')
+    anagram_list.append(anagram)
+    i = 0
+    print("Your anagrams are: ")
+    while i < 5:
+        anagram = GenerateUniqueAnagram(anagram_list, anagram)
+        anagram_list.append(anagram)
+        print(anagram)
+        i += 1
 
