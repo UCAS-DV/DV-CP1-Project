@@ -1,31 +1,3 @@
-letters = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    'Y',
-    'Z'
-]
-    
 def shiftLetter(character, shift):
     if character != " ":
         character_value = ord(character)
