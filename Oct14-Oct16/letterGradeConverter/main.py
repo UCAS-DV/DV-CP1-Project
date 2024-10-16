@@ -3,9 +3,7 @@ print("-~-~-~-~-~ Percent-Letter Grade Converter -~-~-~-~-~")
 num_of_classes = int(input("How many classes do you have? "))
 iteration = 0
 
-grades = [
-    ""
-]
+grades = []
 
 while iteration < num_of_classes:
     percentage = int(input(f"What is your percent grade in class {iteration + 1}? "))
@@ -30,3 +28,14 @@ while iteration < num_of_classes:
         grades.append(f"{iteration}. B")
     elif percentage < 90:
         grades.append(f"{iteration}. B+")
+    elif percentage < 94:
+        grades.append(f"{iteration}. A-")
+    else:
+        grades.append(f"{iteration}. A")
+
+    iteration += 1
+
+print("Your Class Grades: ")
+
+for grade in grades:
+    print(grade)
