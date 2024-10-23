@@ -1,7 +1,5 @@
 import random
 
-game_over = False
-
 options = [
     "rock",
     "paper",
@@ -15,7 +13,7 @@ print("Welcome to Rock, Paper, Scissors! \nAmerica's 17.5th Favorite Pastime (ac
 print('Let us begin! \nChoose one of three options. \n1. Rock \n2. Paper \n3. Scissors')
 print('If you wish to quit, write "quit"')
 
-while not game_over:
+while True:
     user_choice = input('What is your choice? ').lower()
 
     cpu_choice_num = random.randint(0,2)
@@ -23,8 +21,7 @@ while not game_over:
 
     if user_choice == "quit":
             print("Thanks for playing!")
-            game_over = True
-            continue
+            break
 
     if user_choice not in options:
         print("Oops! Invalid Option. Please Try Again... ")
