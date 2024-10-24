@@ -5,9 +5,17 @@ def start_game():
     print("Welcome to the Number Guessing Game!")
     print("I'm thinking of a number between 1 and 100.")
 
-    number_to_guess = random.randint(1, 100)
+    # This was a logic error that allowed the random number to be 100 which is not supposed
+    # to happen because the game specifies it's supposed to roll numbers between 1 and 100.
+    # The bug was caused by using the random.randint instead of the random.randrange function
+
+    number_to_guess = random.randrange(1,100)
     max_attempts = 10
-    attempts = 0
+    # This was a logic error where the game would give you one attempt more than 
+    # your maximum number of attempts because the count started at 0 rather than 1.
+    # Original Code:
+    # attempts = 0
+    attempts = 1
     game_over = False
 
     while not game_over:
@@ -35,7 +43,6 @@ def start_game():
         # maximum number of attempts because the game code didn't increment the number
         # of attempts every guess.
         attempts += 1
-        continue
 
     print("Game Over. Thanks for playing!")
 
