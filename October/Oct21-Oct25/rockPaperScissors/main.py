@@ -31,32 +31,27 @@ while True:
 
     if user_choice == cpu_choice:
         print("TIE!")
-    else:
-        match user_choice:
-
-            case "rock":
-                if cpu_choice == "scissors":
-                    print("VICTORY!")
-                    user_score += 1
-                else:
-                    print("DEFEAT!")
-                    cpu_score += 1
-
-            case "paper":
-                if cpu_choice == "rock":
-                    print("VICTORY!")
-                    user_score += 1
-                else:
-                    print("DEFEAT!")
-                    cpu_score += 1
-
-            case "scissors":
-                if cpu_choice == "paper":
-                    print("VICTORY!")
-                    user_score += 1
-                else:
-                    print("DEFEAT!")
-                    cpu_score += 1
+    elif user_choice == "rock":
+        if cpu_choice == "scissors":
+            print("VICTORY!")
+            user_score += 1
+        else:
+            print("DEFEAT!")
+            cpu_score += 1
+    elif user_choice == "paper":
+        if cpu_choice == "rock":
+            print("VICTORY!")
+            user_score += 1
+        else:
+            print("DEFEAT!")
+            cpu_score += 1
+    elif "scissors":
+        if cpu_choice == "paper":
+            print("VICTORY!")
+            user_score += 1
+        else:
+            print("DEFEAT!")
+            cpu_score += 1
     
     print(f'{user_score}-{cpu_score}')
 
