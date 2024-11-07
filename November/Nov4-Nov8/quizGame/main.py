@@ -56,7 +56,7 @@ easy_question_ans = [
     "A. Super Mario Bros.",
     "B. Duck Hunt",
     "C. Metroid",
-    "D. Punch-Out!!"
+    "D. Punch-Out!!",
     # Question 4
     "A. Nintendo Wii",
     "B. Nintendo Wii U",
@@ -84,7 +84,7 @@ while question < 5:
     else:
         print(easy_questions[question - 1])
         for i in range(0,4):
-            print(easy_question_ans[i + (4 * (question))])
+            print(easy_question_ans[i + (4 * (question - 1))])
 
     answer = input("What is your answer? (input letter) \n").lower()
 
