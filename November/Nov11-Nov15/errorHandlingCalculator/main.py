@@ -51,22 +51,28 @@ while True:
     match operator:
         case "+":
             print(f"{input_1} added to {input_2} is equal to {input_1 + input_2}")
+
         case "-":
             print(f"{input_1} subtracted by {input_2} is equal to {input_1 - input_2}")
+
         case "*":
             print(f"{input_1} multiplied by {input_2} is equal to {input_1 * input_2}")
+
         case "/":
             try:
                 print(f"{input_1} divided by {input_2} is equal to {input_1 / input_2}")
             except:
                 print('ERROR: Division by 0')
+
         case "%":
             try:
                 print(f"The remainder of {input_1} divided by {input_2} is {input_1 % input_2}")
             except:
                 print('ERROR: Modulo by 0')
+
         case "^":
             print(f"{input_1} to the power of {input_2} is equal to {input_1 ** input_2}")
+            
         case "//":
             try:
                 print(f"The quotient of {input_1} and {input_2} rounded down is {input_1 // input_2}")
