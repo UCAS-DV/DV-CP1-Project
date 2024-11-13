@@ -19,7 +19,9 @@ valid_inputs = [
     "//"
 ]
 
-def Calculate(operator, integer_1, integer_2)
+input_1 = 0
+input_2 = 0
+
 
 print("Welcome to the Calculator")
 
@@ -34,16 +36,17 @@ while True:
         print("Oops! Invalid Input! Try Again.")
         continue
     
-    input_1 = int(input("What is your first operand? "))
-    try: 
-        input_1 += 1
+    try:
+        input_1 = int(input("What is your first operand? "))  
     except:
         print("Invalid Integer Operand. Please Try Again.")
-    input_2 = int(input("How about your second operand? "))
-    try: 
-        input_2 += 1
+        continue
+
+    try:
+       input_2 = int(input("How about your second operand? "))
     except:
         print("Invalid Integer Operand. Please Try Again.")
+        continue
 
     match operator:
         case "+":
@@ -53,13 +56,22 @@ while True:
         case "*":
             print(f"{input_1} multiplied by {input_2} is equal to {input_1 * input_2}")
         case "/":
-            print(f"{input_1} divided by {input_2} is equal to {input_1 / input_2}")
+            try:
+                print(f"{input_1} divided by {input_2} is equal to {input_1 / input_2}")
+            except:
+                print('ERROR: Division by 0')
         case "%":
-            print(f"The remainder of {input_1} divided by {input_2} is {input_1 % input_2}")
+            try:
+                print(f"The remainder of {input_1} divided by {input_2} is {input_1 % input_2}")
+            except:
+                print('ERROR: Modulo by 0')
         case "^":
             print(f"{input_1} to the power of {input_2} is equal to {input_1 ** input_2}")
         case "//":
-            print(f"The quotient of {input_1} and {input_2} rounded down is {input_1 // input_2}")
+            try:
+                print(f"The quotient of {input_1} and {input_2} rounded down is {input_1 // input_2}")
+            except:
+                print('ERROR: Division by 0')         
 
     continue_confirmation = input('Do you wish to continue? If not, type "leave" and if so type anything: ')
 
