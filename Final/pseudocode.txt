@@ -1,0 +1,19 @@
+SET LIST containing locations
+SET LIST containing places_to_go
+SET position
+
+SET LIST containing inventory
+
+SET health to 100
+SET nerves to 100
+SET strength to 1
+SET bravery to 1
+SET durability to 1
+
+SET DICTIONARY containing bosses with health, nerves, name
+SET LIST containing player_attacks
+SET LIST containing lists of enemy_attacks for different bosses
+
+SET LIST containing lists of narration text for different situations
+
+DEFINE FUNCTION called Move that takes in the current_local and the desired_local
