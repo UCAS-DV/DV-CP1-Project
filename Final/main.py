@@ -36,11 +36,41 @@ places_to_go = [
     [0, 1, 2, 7]
 ]
 
+game_dialogue = [
+    # Intro [0]
+    [game_intro, "Hello", "goodbye", "sigma"]
+]
 
 inventory = []
 
-def IncorrectAction(action, action_type, input):
+player_stats = {
+    "health": 100,
+    "nerves": 100,
+    "strength": 1,
+    "bravery": 1,
+    "durability": 1
+}
 
+player_attacks = [
+    {
+        "name": "Uncouth Declaration",
+        "damage": 0,
+        "discomfort": 10,
+        "description": '''Forget physical damage! Emotional damage is where it's at!
+        Reduce your enemies NERVES by saying something mean to them!''',
+        "attack_super_sucess": ["Oh...", "wow...", "I get how intense this situation is but you didn't have to go that far.", "To be frank I don't even know if you can legally say that."],
+        "attack_sucess": ["Oh! He's absolutely devastated!"],
+        "attack_failure": ["Okay, so, pro tip...", 'Calling your opponent "Stinky" is not very effective past the first grade'],
+        "attack_super_failure": ["What was that?!", "That is likely the single most tame, polite sentence ever constructed"],
+        "special_effect": None
+    }
+]
+
+def Dialogue(dialouge):
+    for line in dialouge:
+        input(line)
+
+def IncorrectAction(action, action_type, input):
     # Action Key
     # 0 == Movement
 
@@ -60,7 +90,7 @@ def Move(current_local, desired_local):
         IncorrectAction(0, 1, locations[desired_local])
         return current_local
     elif locations[desired_local] not in locations:
-        IncorrectAction(0, 0, locations[desired_local])
+        IncorrectAction(0, 0, [desired_local])
         return current_local
 
     # On the chance the player is in Town City or American Australia, the game will verify whether or not they have a boat to determine if they succesfully move.
@@ -80,11 +110,25 @@ def Move(current_local, desired_local):
     else:
         print(f"Sorry pal, you can't move to {locations[desired_local]} from {locations[current_local]} \nYou did not move.")
         return current_local
-        
-input(game_intro)
 
+def Fight(boss):
+    turn = -1
+
+    if turn < 0:
+        Dialogue(boss["intro"])
+        turn += 1
+
+    if turn % 2 == 0:
+        print('''
+-~-~-~-~-~Battle-~-~-~-~-~
+1. Check Stats
+2. Select Item
+3. Select Attack''')
+        
+
+
+Dialogue(game_dialogue[0])
 
 while True:
-
     print(position)
-    position = Move(position, int(input("Where would you like to go comrade? ")))
+    position = Move(position, int(input("Where would you like to go? ")))

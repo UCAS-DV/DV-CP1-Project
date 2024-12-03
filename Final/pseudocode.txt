@@ -10,8 +10,8 @@ SET strength to 1
 SET bravery to 1
 SET durability to 1
 
-SET DICTIONARY containing bosses with health, nerves, name
-SET LIST containing player_attacks
+SET DICTIONARY containing bosses with health, nerves, name, and opening dialogue
+SET LIST containing DICTIONARY of player_attacks containing the amount of damage, discomfort (damage for nerves), description
 SET LIST containing lists of enemy_attacks for different bosses
 
 SET LIST containing lists of narration text for different situations
