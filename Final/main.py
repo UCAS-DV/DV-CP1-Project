@@ -62,7 +62,8 @@ player_attacks = [
         "attack_sucess": ["Oh! He's absolutely devastated!"],
         "attack_failure": ["Okay, so, pro tip...", 'Calling your opponent "Stinky" is not very effective past the first grade'],
         "attack_super_failure": ["What was that?!", "That is likely the single most tame, polite sentence ever constructed"],
-        "special_effect": None
+        "is_item": False,
+        
     }
 ]
 
@@ -125,8 +126,6 @@ def Fight(boss):
 2. Select Item
 3. Select Attack''')
         
-
-
 Dialogue(game_dialogue[0])
 
 while True:

@@ -1,19 +1,167 @@
-SET LIST containing locations
-SET LIST containing places_to_go
-SET position
+SET LIST locations containing locations as strings
+SET LIST places_to_go containing locations that can be traversed as a LIST of numbers
+SET LIST places_been containing numbers
+SET position as number
 
-SET LIST containing inventory
+SET LIST inventory containing DICTIONARYs for items, containing name, effects, a True boolean indicating it's an item called is_item, a boolean indicating whether it's directed to the enemy or player called to_player, and written text after application showcasing it's effectiveness
 
-SET health to 100
-SET nerves to 100
-SET strength to 1
-SET bravery to 1
-SET durability to 1
+SET DICTIONARY player_stats
+    SET health to 100
+    SET nerves to 80
+    SET strength to 0
+    SET bravery to 0
+    SET durability to 0
+    SET max_health to 100 plus durability times 25
+    SET max_nerves to 80 plus bravery times 5
+    SET attack_potency to 1 plus durability times 0.2
 
-SET DICTIONARY containing bosses with health, nerves, name, and opening dialogue
-SET LIST containing DICTIONARY of player_attacks containing the amount of damage, discomfort (damage for nerves), description
-SET LIST containing lists of enemy_attacks for different bosses
+SET LIST containing DICTIONARYs named bosses with health, nerves, name, index, victory_item, victory_stat, boss_victory_text, boss_defeat_text, boss_location, is_defeated, and opening_dialogue
+SET LIST containing DICTIONARYs named player_attacks containing the amount of damage, discomfort (damage for nerves), name, a False boolean indicating it's an item called is_item, and the written text after the attack, depending on whether it was succesful
+SET LIST containing LISTs of DICTIONARYs named enemy_attacks for different bosses containing the amount of damage, discomfort (damage for nerves), name, and the written text after the attack, depending on whether it was succesful
 
-SET LIST containing lists of narration text for different situations
+SET LIST containing LISTs of narration text for different situations named game_dialogue
+SET pages to 0
 
-DEFINE FUNCTION called Move that takes in the current_local and the desired_local
+DEFINE FUNCTION called Dialogue that takes in a LIST of dialouge
+    LOOP for every string in dialogue
+        PRINT string
+        GET any player input 
+        
+DEFINE FUNCTION called GameOver that takes in game_over_text
+    INVOKE Dialogue with game_over_text
+    SET health in player_stats to max_health
+    SET position of the index of Just A White Void
+
+DEFINE FUNCTION called Victory that takes in victory_text and item_rea
+    INVOKE Dialogue with victory_text
+    ADD reward to inventory
+    IF victory_stat is equal to 0
+        ADD 1 to strength in player_stats
+    If victory_stat is equal to 1
+        ADD 1 to bravery in player_stats
+    IF victory_stat is equal to 2
+        ADD 1 to attack_potency in player_stats
+
+    ADD 1 to pages
+
+DEFINE FUNCTION called CheckInventory
+    LOOP for every item in inventory
+        PRINT index of item
+        PRINT item's name
+        PRINT item's effects
+
+DEFINE FUNCTION called Move that takes in the current_local and the desired_local as numbers
+
+    IF desired_local equals current_local
+        RETURN current_local
+    ELSE IF desired_local does not exist
+        RETURN current_local
+
+    IF current_local is not Town City or American Australia
+        IF desired_local is British Texas
+            IF there is a Boat in inventory
+                RETURN desired_local
+            ELSE
+                return current_local
+    
+    IF desired_local is in the availible places_to_go
+        IF desired_local is not in places_been
+            ADD desired_local to places_been
+        RETURN desired_local
+    ELSE
+        RETURN current_local
+
+DEFINE FUNCTION RollNerveEffect that takes in an integer, user_nerves
+    GENERATE RANDOM NUMBER from 1 to 100
+    IF random number is more than user_nerves
+        IF random number is more than 150% of user_nerves
+            RETURN 0
+    ELSE
+        RETURN 0.75
+    ELSE 
+        IF random number less than 20% of user_nerves
+            RETURN 1.5
+        ELSE
+            RETURN 1
+
+DEFINE FUNCTION Action that takes in a dictionary of an item or attack, a integer called nerves_value, boolean named from_player and the boss
+    
+    SET nerve_multipler to the value of RollNerveEffect with user_nerves
+
+    IF from_player is True
+        IF is_item in dictionary is True
+            IF to_player is True
+                APPLY effects with stats multiplied by nerve_multipler to player_stats
+            ELSE
+                APPLY effects with stats multiplied by nerve_multipler to boss
+        ELSE 
+            APPLY damage and discomfort in the attack stats multiplied by attack_potency then multiplied by nerve_multipler to boss
+    ELSE
+        APPLY damage and discomfort in attack stats multiplied by nerve_multipler to player_stats
+
+    If nerve_multipler is equal to 0
+        PRINT dictionary's superfailure text
+    ELSE IF nerve_multipler is equal to 0.75
+        PRINT dictionary's failure text
+    ELSE IF nerve_multipler is equal to 1
+        PRINT dictionary's success text
+    ELSE If nerve_multipler is equal to 1.5
+        PRINT dictionary's supersuccess text
+
+DEFINE FUNCTION Fight that takes in a dictionary of boss stats
+
+    SET turn to 0
+    SET using_item to False
+    SET fight_finished to False
+
+    INVOKE Dialogue with the boss's opening_dialogue
+
+    PRINT Boss's name
+
+    LOOP while fight_finished is False
+        IF turn is an even number
+
+            PRINT a list of possible actions with corresponding numbers
+            PROMPT player to give action as integer
+
+            IF action is equal to 0
+                PRINT player_stats
+                PRINT boss's stats such as health and nerves
+                PROMPT player to give any input
+                CONTINUE to next iteration of LOOP
+            ELSE IF action is equal to 1
+                PRINT inventory with corresponding indexes to each item
+                PROMPT player to enter action_index
+                INVOKE Action with an item corresponding with the action_index, nerves, a True value for from_player and the boss stats
+            ELSE IF action is equal to 2
+                PRINT player_attacks with corresponding indexes to each attack
+                PROMPT player to enter action_index
+                INVOKE Action with an attack corresponding with the action_index, nerves, a True value for from_player and the boss stats
+
+        IF turn is an odd number
+            GENERATE RANDOM NUMBER from 0 to 4
+            INVOKE Action with an attack corresponding with the random number from the corresponding list of enemy_attacks as outlined by the boss's index
+
+        IF health in player_stats is equal to or less than 0
+            INVOKE GameOver with boss_victory_text
+            END LOOP
+        ELSE IF health in boss stats is equal to or less than 0
+            INVOKE Victory
+            END LOOP
+
+INVOKE Dialogue with title screen and intro scene in list
+
+LOOP while game_won is False
+    PROMPT player to enter a desired position
+    INVOKE Move with desired position and position
+
+    IF position is not in places_been
+        LOOP for each boss in bosses
+            IF boss_location is equal to the current position and is_defeated is False
+                INVOKE Fight with boss
+        
+        ADD position to places_been
+
+    IF pages is equal to 4
+        INVOKE Dialogue with victory text
+        game_won is False
