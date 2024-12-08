@@ -76,8 +76,8 @@ DEFINE FUNCTION RollNerveEffect that takes in an integer, user_nerves
     IF random number is more than user_nerves
         IF random number is more than 150% of user_nerves
             RETURN 0
-    ELSE
-        RETURN 0.75
+        ELSE
+            RETURN 0.75
     ELSE 
         IF random number less than 20% of user_nerves
             RETURN 1.5
