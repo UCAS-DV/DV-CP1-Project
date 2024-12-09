@@ -93,7 +93,7 @@ DEFINE FUNCTION Action that takes in a dictionary of an item or attack, a intege
             IF to_player is True
                 APPLY effects with stats multiplied by nerve_multipler to player_stats
             ELSE
-                APPLY effects with stats multiplied by nerve_multipler to boss
+                APPLY effects with stats multiplied by nerve_multipler to boss  
         ELSE 
             APPLY damage and discomfort in the attack stats multiplied by attack_potency then multiplied by nerve_multipler to boss
     ELSE
