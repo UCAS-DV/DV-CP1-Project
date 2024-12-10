@@ -32,7 +32,7 @@ DEFINE FUNCTION called GameOver that takes in game_over_text
     SET health in player_stats to max_health
     SET position of the index of Just A White Void
 
-DEFINE FUNCTION called Victory that takes in victory_text and item_rea
+DEFINE FUNCTION called Victory that takes in victory_text and item_reward
     INVOKE Dialogue with victory_text
     ADD reward to inventory
     IF victory_stat is equal to 0

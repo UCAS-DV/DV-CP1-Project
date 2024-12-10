@@ -67,6 +67,7 @@ items = [
 
 name = 'You'
 inventory = []
+
 player_stats = {
     "health": 100,
     "nerves": 100,
@@ -115,7 +116,19 @@ player_attacks = [
         "failure": ['3'],
         "super_failure": ['4'],
         "is_item": False
-    }
+    },
+     {
+        "name": "Falcon Punch",
+        "description": '''Insta-Kill for Debugging''',
+        "health_effect": -1000,
+        "nerves_effect": -1000,
+        'to_player': False,
+        "super_success": ['The Debugging is Debugging Greatly'],
+        "success": ['The Debugging is Debugging'],
+        "failure": ['The Debugging is Kinda Debugging'],
+        "super_failure": ['The Debugging is Not Debugging'],
+        "is_item": False
+    },
 ]
 
 bosses = [
@@ -199,21 +212,66 @@ boss_attacks = [
 def Dialogue(dialogue):
     for line in dialogue:
         input(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
-            
-def RollNerveEffect(nerves):
-    rolled_number = random.randint(1,100)
+      
+def ShowOptions(choices, selection_prompt, display_only):
+    input_taken = False
+    player_choice = 0
+    
+    while not input_taken:
+        for choice in choices:
 
-    if rolled_number > nerves:
-        if rolled_number > (nerves * 1.75):
-            return 0
-        else:
-            return 0.5
-    else:
-        if rolled_number < (nerves * 0.1):
-            return 1.5
-        else:
-            return 1
+            # Checks if the choice has an health_effesct because only items and attacks have them, so this is to check if the choice is an attack or item
+            if type(choice) is dict:
+
+                print(f'{choices.index(choice)}. {choice['name']}')
+
+                for stat in choice:
+                    if choice[stat] == 0 or stat == 'name':
+                        continue
+
+                    match stat:
+                        case 'description':
+                            print(f'    - {choice[stat]}')
+                        case 'health_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Heals {choice[stat]} Health')
+                            else:
+                                print(f'    - Deals {choice[stat] * -1} Damage')
+                        case 'nerves_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Adds {choice[stat]} Nerves')
+                            else:
+                                print(f'    - Inflicts {choice[stat]} Nerves')
+                        case 'health_overtime_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Heals additional {choice[stat]} health every turn for {choice['duration']} turns')
+                            else:
+                                print(f'    - Deals additional {choice[stat]} damage every turn for {choice['duration']} turns')
+                        case 'nerves_overtime_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Adds additional {choice[stat]} nerves every turn for {choice['duration']} turns')
+                            else:
+                                print(f'    - Inflicts additional {choice[stat]} nerves every turn for {choice['duration']}')
+
+                if choice['to_player'] == True:
+                    print('    - Affects: Player')
+                if choice['to_player'] == False:
+                    print('    - Affects: Opponent')
+            else:
+                print(f'{choices.index(choice)}. {choice}')
+
+        if not display_only:    
+            try:
+                player_choice = int(input(selection_prompt))
+            except:
+                print("Oops! Seems like you inputted something wrong. Let's roll that back.")
+                continue
+
+            if player_choice < 0 or player_choice > (len(choices) - 1):
+                continue
         
+        return player_choice
+       
 def Move(current_local, desired_local):
 
     if desired_local == current_local:
@@ -240,6 +298,20 @@ def Move(current_local, desired_local):
     else:
         print(f"Sorry pal, you can't move to {locations[desired_local]} from {locations[current_local]} \nYou did not move.")
         return current_local
+
+def RollNerveEffect(nerves):
+    rolled_number = random.randint(1,100)
+
+    if rolled_number > nerves:
+        if rolled_number > (nerves * 1.75):
+            return 0
+        else:
+            return 0.5
+    else:
+        if rolled_number < (nerves * 0.1):
+            return 1.5
+        else:
+            return 1  
 
 def TakeAction(action, nerves_value, from_player, boss):
     nerve_multipler = RollNerveEffect(nerves_value)
@@ -334,78 +406,21 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
-def ShowOptions(choices, selection_prompt):
-    input_taken = False
-
-    while not input_taken:
-        for choice in choices:
-
-            # Checks if the choice has an health_effesct because only items and attacks have them, so this is to check if the choice is an attack or item
-            if type(choice) is dict:
-
-                print(f'{choices.index(choice)}. {choice['name']}')
-
-                for stat in choice:
-                    if choice[stat] == 0 or stat == 'name':
-                        continue
-
-                    match stat:
-                        case 'description':
-                            print(f'    - {choice[stat]}')
-                        case 'health_effect':
-                            if choice[stat] > 0:
-                                print(f'    - Heals {choice[stat]} Health')
-                            else:
-                                print(f'    - Deals {choice[stat] * -1} Damage')
-                        case 'nerves_effect':
-                            if choice[stat] > 0:
-                                print(f'    - Adds {choice[stat]} Nerves')
-                            else:
-                                print(f'    - Inflicts {choice[stat]} Nerves')
-                        case 'health_overtime_effect':
-                            if choice[stat] > 0:
-                                print(f'    - Heals additional {choice[stat]} health every turn for {choice['duration']} turns')
-                            else:
-                                print(f'    - Deals additional {choice[stat]} damage every turn for {choice['duration']} turns')
-                        case 'nerves_overtime_effect':
-                            if choice[stat] > 0:
-                                print(f'    - Adds additional {choice[stat]} nerves every turn for {choice['duration']} turns')
-                            else:
-                                print(f'    - Inflicts additional {choice[stat]} nerves every turn for {choice['duration']}')
-
-                if choice['to_player'] == True:
-                    print('    - Affects: Player')
-                if choice['to_player'] == False:
-                    print('    - Affects: Opponent')
-            else:
-                print(f'{choices.index(choice)}. {choice}')
-            
-        try:
-            player_choice = int(input(selection_prompt))
-        except:
-            print("Oops! Seems like you inputted something wrong. Let's roll that back.")
-            continue
-
-        if player_choice < 0 or player_choice > (len(choices) - 1):
-            continue
-        
-        return player_choice
-
-
-
 def Fight(boss):
     turn = -1
     fight_finished = False
+
+    inventory_saved = inventory
+    stats_saved = player_stats
 
     while not fight_finished:
         if turn < 0:
             Dialogue(boss["intro"])
             turn += 1
-
-        if turn % 2 == 0:
+        elif turn % 2 == 0:
             print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ )')
             try:
-                action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ')
+                action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
             except:
                 print("Seems like you entered that incorrectly. Let's roll this back. ")
                 continue
@@ -423,17 +438,29 @@ def Fight(boss):
                     if not inventory:
                         input("Welp, there's nothing here, back to the main battle menu. ")
                         continue
-                    TakeAction(inventory[ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ")], boss['nerves'], True, boss)
+                    TakeAction(inventory[ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", False)], boss['nerves'], True, boss)
                 case 2:        
-                    TakeAction(player_attacks[ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ")], player_stats['nerves'], True, boss)        
+                    TakeAction(player_attacks[ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)], player_stats['nerves'], True, boss)        
                 
             input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
             turn += 1  
         else:
-            boss_attack = random.randint(0,2)
+            boss_attack = random.randint(0, len(boss_attacks[boss['index']]) - 1)
             TakeAction(boss_attacks[boss['index']][boss_attack], boss['nerves'], False, boss)
             input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
             turn += 1
+        
+        if player_stats['health'] <= 0:
+            Dialogue(boss['boss_victory_text'])
+            position = 0
+            fight_finished = True
+        elif boss['health'] <= 0:
+            Dialogue(boss['boss_defeat_text'])
+            inventory.append(boss['victory_item'])
+            input('You have a new item! (1/1)')
+            ShowOptions([boss['victory_item']], 'Test', display_only=True)
+            boss['is_defeated'] = True
+            fight_finished = True
 
 if not skip_intro:
     input(game_intro)
@@ -470,7 +497,10 @@ while True:
                 places_been.append(position)
                 Fight(boss)
     try:
-        position = Move(position, ShowOptions(places_to_go, 'Where would you like to go? '))
+        print(f"Since you're currently at {locations[position]}, you can go to: ")
+        for place in places_to_go[position]:
+            print(f"{place}. {locations[place]}")
+        position = Move(position, int(input("Where would you like to go? ")))
     except:
         print("Oops! Seems like you entered something incorrectly. Let's try that again")
 
