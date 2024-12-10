@@ -81,11 +81,11 @@ player_stats = {
 player_attacks = [
     {
         "name": "Uncouth Declaration",
+        "description": '''Forget physical damage! Emotional damage is where it's at!
+        Reduce your enemies NERVES by saying something mean to them!''',
         "health_effect": 0,
         "nerves_effect": -15,
         'to_player': False,
-        "description": '''Forget physical damage! Emotional damage is where it's at!
-        Reduce your enemies NERVES by saying something mean to them!''',
         "super_success": ["Oh...", "wow...", "I get how intense this situation is but you didn't have to go that far.", "To be frank I don't even know if you can legally say that."],
         "success": ["Oh! He's absolutely devastated!"],
         "failure": ["Okay, so, pro tip...", 'Calling your opponent "Stinky" is not very effective past the first grade'],
@@ -94,10 +94,10 @@ player_attacks = [
     },
     {
         "name": "School-Appropriate Attack",
+        "description": '''Deal damage to your opponent in a very school appropriate way with one simple trick!''',
         "health_effect": -10,
         "nerves_effect": 0,
-        'to_player': False,
-        "description": '''Deal damage to your opponent in a very school appropriate way with one simple trick!''',
+        'to_player': False,    
         "super_success": ['1'],
         "success": ['2'],
         "failure": ['3'],
@@ -106,10 +106,10 @@ player_attacks = [
     },
     {
         "name": "Deep Breaths",
+        "description": '''Breathe in... Breathe out... Feels better right?''',
         "health_effect": 0,
         "nerves_effect": 15,
         'to_player': True,
-        "description": '''Breathe in... Breathe out... Feels better right?''',
         "super_success": ['1'],
         "success": ['2'],
         "failure": ['3'],
@@ -335,52 +335,62 @@ def TakeAction(action, nerves_value, from_player, boss):
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
 def ShowOptions(choices, selection_prompt):
+    input_taken = False
 
-    for choice in choices:
+    while not input_taken:
+        for choice in choices:
 
-        # Checks if the choice has an health_effesct because only items and attacks have them, so this is to check if the choice is an attack or item
-        if type(choice) is dict:
+            # Checks if the choice has an health_effesct because only items and attacks have them, so this is to check if the choice is an attack or item
+            if type(choice) is dict:
+
+                print(f'{choices.index(choice)}. {choice['name']}')
+
+                for stat in choice:
+                    if choice[stat] == 0 or stat == 'name':
+                        continue
+
+                    match stat:
+                        case 'description':
+                            print(f'    - {choice[stat]}')
+                        case 'health_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Heals {choice[stat]} Health')
+                            else:
+                                print(f'    - Deals {choice[stat] * -1} Damage')
+                        case 'nerves_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Adds {choice[stat]} Nerves')
+                            else:
+                                print(f'    - Inflicts {choice[stat]} Nerves')
+                        case 'health_overtime_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Heals additional {choice[stat]} health every turn for {choice['duration']} turns')
+                            else:
+                                print(f'    - Deals additional {choice[stat]} damage every turn for {choice['duration']} turns')
+                        case 'nerves_overtime_effect':
+                            if choice[stat] > 0:
+                                print(f'    - Adds additional {choice[stat]} nerves every turn for {choice['duration']} turns')
+                            else:
+                                print(f'    - Inflicts additional {choice[stat]} nerves every turn for {choice['duration']}')
+
+                if choice['to_player'] == True:
+                    print('    - Affects: Player')
+                if choice['to_player'] == False:
+                    print('    - Affects: Opponent')
+            else:
+                print(f'{choices.index(choice)}. {choice}')
             
-            print('Reached Point C!')
-            print(f'{choices.index(choice)}. {choice['name']}')
+        try:
+            player_choice = int(input(selection_prompt))
+        except:
+            print("Oops! Seems like you inputted something wrong. Let's roll that back.")
+            continue
 
-            for stat in choice:
-                if choice[stat] == 0 or stat == 'name':
-                    continue
+        if player_choice < 0 or player_choice > (len(choices) - 1):
+            continue
+        
+        return player_choice
 
-                match stat:
-                    case 'description':
-                        print(f'    - {stat['description']}')
-                    case 'health_effect':
-                        if choice[stat] > 0:
-                            print(f'    - Heals {choice[stat]} Health')
-                        else:
-                            print(f'    - Deals {choice[stat] * -1} Damage')
-                    case 'nerves_effect':
-                        if choice[stat] > 0:
-                            print(f'    - Adds {choice[stat]} Nerves')
-                        else:
-                            print(f'    - Inflicts {choice[stat]} Nerves')
-                    case 'health_overtime_effect':
-                        if choice[stat] > 0:
-                            print(f'    - Heals additional {choice[stat]} health every turn for {choice['duration']} turns')
-                        else:
-                            print(f'    - Deals additional {choice[stat]} damage every turn for {choice['duration']} turns')
-                    case 'nerves_overtime_effect':
-                        if choice[stat] > 0:
-                            print(f'    - Adds additional {choice[stat]} nerves every turn for {choice['duration']} turns')
-                        else:
-                            print(f'    - Inflicts additional {choice[stat]} nerves every turn for {choice['duration']}')
-
-            if choice['to_player'] == True:
-                print('    - Affects: Player')
-            if choice['to_player'] == False:
-                print('    - Affects: Opponent')
-        else:
-            print(f'{choices.index(choice)}. {choice}')
-            
-    player_choice = int(input(selection_prompt))
-    return player_choice
 
 
 def Fight(boss):
@@ -404,7 +414,7 @@ def Fight(boss):
                 case 0:
                     print(f"-=-=-=-{name}'s Stats-=-=-=-")
                     print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
-                    print(f"Durability {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
+                    print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
                     print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
                     print(f"Health: {boss['health']}/{boss['max_health']} \nNerves: {boss['nerves']}/{boss['max_nerves']} \nMinimum Nerves: {boss['min_nerves']}\nAttack Potency: {boss["attack_potency"]}x")
                     input("Enter Anything to go back to main battle menu: ")
@@ -413,17 +423,9 @@ def Fight(boss):
                     if not inventory:
                         input("Welp, there's nothing here, back to the main battle menu. ")
                         continue
-                    try:
-                        TakeAction(inventory[ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ")], boss['nerves'], True, boss)
-                    except:
-                        input("Eh-hem, you entered that incorrectly. Let's roll this back. ")
-                        continue
+                    TakeAction(inventory[ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ")], boss['nerves'], True, boss)
                 case 2:        
-                    try:
-                        TakeAction(player_attacks[ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ")], player_stats['nerves'], True, boss)
-                    except:
-                        input("Eh-hem, you entered that incorrectly. Let's roll this back. ")
-                        continue          
+                    TakeAction(player_attacks[ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ")], player_stats['nerves'], True, boss)        
                 
             input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
             turn += 1  
