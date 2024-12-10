@@ -2,6 +2,7 @@ import random
 
 # Debug Values. Do not apply to game.
 skip_intro = True
+instawin = False
 
 game_intro = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -41,6 +42,11 @@ places_to_go = [
     [0, 1, 2, 7]
 ]
 places_been = []
+location_dialogue = [
+    ["Boss"],
+    ['Welcome to Spookytown!']
+]
+
 
 items = [
     {
@@ -61,7 +67,7 @@ items = [
         "super_failure": ["Uh oh...", "Seems like you're attempted recall into your hopes and determination has just made you feel a little stupid", 
                           "Well, if it makes you feel better. I believe in you!",
                           "Well, that's actually lie, but your end is my end so please don't die."],
-        'is_item': True
+        'is_item': True,
     }
 ]
 
@@ -116,8 +122,11 @@ player_attacks = [
         "failure": ['3'],
         "super_failure": ['4'],
         "is_item": False
-    },
-     {
+    }
+]
+
+if instawin:
+    player_attacks.append({
         "name": "Falcon Punch",
         "description": '''Insta-Kill for Debugging''',
         "health_effect": -1000,
@@ -128,8 +137,7 @@ player_attacks = [
         "failure": ['The Debugging is Kinda Debugging'],
         "super_failure": ['The Debugging is Not Debugging'],
         "is_item": False
-    },
-]
+    })
 
 bosses = [
     {
@@ -361,7 +369,7 @@ def TakeAction(action, nerves_value, from_player, boss):
 
     elif from_player and action['is_item']:
 
-        health_effect = action['health_effect']
+        health_effect = action['health_effect'] 
         nerves_effect = action['nerves_effect']
 
         Dialogue(user_text)
@@ -410,9 +418,6 @@ def Fight(boss):
     turn = -1
     fight_finished = False
 
-    inventory_saved = inventory
-    stats_saved = player_stats
-
     while not fight_finished:
         if turn < 0:
             Dialogue(boss["intro"])
@@ -445,8 +450,17 @@ def Fight(boss):
             input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
             turn += 1  
         else:
-            boss_attack = random.randint(0, len(boss_attacks[boss['index']]) - 1)
-            TakeAction(boss_attacks[boss['index']][boss_attack], boss['nerves'], False, boss)
+            boss_attack_real = {}
+            boss_attack_real = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+
+            # Following If Statements are to ensure the boss doesn't make any redundant moves
+            if boss_attack_real['health_effect'] > 0 and boss['health'] == boss['max_health']:
+                boss_attack_real = random.randint(0, len(boss_attacks[boss['index']]) - 1)
+
+            if boss_attack_real['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
+                boss_attack_real = boss_attack_real = random.randint(0, len(boss_attacks[boss['index']]) - 1)
+
+            TakeAction(boss_attack_real, boss['nerves'], False, boss)
             input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
             turn += 1
         
@@ -458,7 +472,7 @@ def Fight(boss):
             Dialogue(boss['boss_defeat_text'])
             inventory.append(boss['victory_item'])
             input('You have a new item! (1/1)')
-            ShowOptions([boss['victory_item']], 'Test', display_only=True)
+            input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
             boss['is_defeated'] = True
             fight_finished = True
 
@@ -483,8 +497,6 @@ if not skip_intro:
 
     name = input(f'Really? Are you sure "{name}" is your name? Write your name again just to be sure, or write a different name if the one you entered was wrong: ')
 
-    pronouns = input()
-
     Dialogue([f"Well then, it's a pleasure to meet you {name}.",
           "Now, let's save America!"])
 
@@ -492,10 +504,16 @@ if not skip_intro:
 while True:
 
     if position not in places_been:
+        places_been.append(position)
         for boss in bosses:
             if boss["location"] == position and boss["is_defeated"] == False:
-                places_been.append(position)
                 Fight(boss)
+                break
+        else:
+            Dialogue(location_dialogue[position])
+
+                    
+
     try:
         print(f"Since you're currently at {locations[position]}, you can go to: ")
         for place in places_to_go[position]:
