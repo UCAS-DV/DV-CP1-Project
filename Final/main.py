@@ -88,6 +88,7 @@ player_stats = {
     "strength": 1,
     "bravery": 1,
     "durability": 1,
+    "recovery": 1,
     "max_health": 100,
     "max_nerves": 100,
     "min_nerves": 25,
@@ -129,6 +130,23 @@ player_attacks = [
         "failure": ['3'],
         "super_failure": ['4'],
         "is_item": False
+    },
+    {
+        ''
+    }
+]
+prize_attacks = [
+    {
+        "name": "Power of Friendship!",
+        "description": '''Right as your on the ropes, invoke the power of friendship to heal yourself!''',
+        "health_effect": 5,
+        "nerves_effect": 0,
+        'to_player': False,
+        "super_success": [""],
+        "success": ["Somehow the power of friendship partially negates your injuries."],
+        "failure": ["Apparently friendship doesn't beat mortal peril."],
+        "super_failure": ['As you try to invoke the power of friendship you suddenly remember...', 'The only friends you have is an alien and the voice in your head', 'You feel very lonely'],
+        "is_item": False
     }
 ]
 
@@ -156,6 +174,7 @@ bosses = [
         "min_nerves": 25,
         "attack_potency": 1,
         "victory_item": items[0],
+        'victory_attack': prize_attacks[0],
         "location": 0,
         'index': 0,
         "intro": ["Battle GO!"],
@@ -163,7 +182,8 @@ bosses = [
         "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
                              "And don't worry, since I don't exist, I'm completely fine!", 
                              "I'll never leave..."],
-        "is_defeated": False
+        "is_defeated": False,
+        'encountered': False
     }
 ]
 boss_attacks = [
@@ -429,9 +449,9 @@ def Fight(boss):
     fight_finished = False
     player_action = {}
 
-    while not fight_finished:
+    boss['encountered'] = True
 
-        
+    while not fight_finished:
 
         if turn < 0:
             Dialogue(boss["intro"])
@@ -472,10 +492,10 @@ def Fight(boss):
 
             # Following If Statements are to ensure the boss doesn't make any redundant moves
             if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
-                boss_attack = random.randint(0, len(boss_attacks[boss['index']]) - 1)
+                boss_attack =  boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
 
             if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
-                boss_attack = random.randint(0, len(boss_attacks[boss['index']]) - 1)
+                boss_attack =  boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
             
             if rerolls < 3:
                 if player_action["nerves_effect"] < 0 and not player_action['to_player'] and boss_attack['nerves_effect'] <= 0:
@@ -487,19 +507,26 @@ def Fight(boss):
             input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
             turn += 1
         
+        # Game Over Sequence
         if player_stats['health'] <= 0:
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
             Dialogue(boss['boss_victory_text'])
+            places_been.pop()
             position = 0
             fight_finished = True
+        
+        # Victory Sequence
         elif boss['health'] <= 0:
             Dialogue(boss['boss_defeat_text'])
+
+            # Give Player Reward Item
             inventory.append(boss['victory_item'])
             input('You have a new item! (1/1)')
             input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
 
-            match ShowOptions(([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}']), 'Which stat do you wish to level up? ', False):
+            # Have player choose what stat to level up
+            match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}'], 'Which stat do you wish to level up? ', False):
                 case 0:
                     player_stats['strength'] += 1
                     player_stats['attack_potency'] += (player_stats["strength"] - 1) * 0.25
@@ -514,6 +541,9 @@ def Fight(boss):
                     player_stats['min_nerves'] += (player_stats['bravery'] - 1) * 5
                     Dialogue(f'Your durability is now at Level {player_stats['bravery']}!')
 
+            # Reset Player health and nerves and mark boss as defeated
+            player_stats["health"] = player_stats['max_health']
+            player_stats['nerves'] = player_stats['max_nerves']
             boss['is_defeated'] = True
             fight_finished = True
 
