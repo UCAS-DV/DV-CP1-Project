@@ -131,23 +131,6 @@ player_attacks = [
         "super_failure": ['4'],
         "is_item": False
     },
-    {
-        ''
-    }
-]
-prize_attacks = [
-    {
-        "name": "Power of Friendship!",
-        "description": '''Right as your on the ropes, invoke the power of friendship to heal yourself!''',
-        "health_effect": 5,
-        "nerves_effect": 0,
-        'to_player': False,
-        "super_success": [""],
-        "success": ["Somehow the power of friendship partially negates your injuries."],
-        "failure": ["Apparently friendship doesn't beat mortal peril."],
-        "super_failure": ['As you try to invoke the power of friendship you suddenly remember...', 'The only friends you have is an alien and the voice in your head', 'You feel very lonely'],
-        "is_item": False
-    }
 ]
 
 if instawin:
@@ -164,6 +147,50 @@ if instawin:
         "is_item": False
     })
 
+boss_attacks = [
+    [
+        {
+            "name": "Terrible Pessimism",
+            "health_effect": 0,
+            "nerves_effect": -15,
+            "to_player": True,
+            "super_success": ['1'],
+            "success": ['2'],
+            "failure": ['3'],
+            "super_failure": ['4']
+        },
+        {
+            "name": "Pep Talk",
+            "health_effect": 10,
+            "nerves_effect": 0,
+            "to_player": False,
+            "super_success": ['1'],
+            "success": ['2'],
+            "failure": ['3'],
+            "super_failure": ['4']
+        },
+        {
+            "name": "Unbearable Yell",
+            "health_effect": -10,
+            "nerves_effect": -5,
+            "to_player": True,
+            "super_success": ['1'],
+            "success": ['2'],
+            "failure": ['3'],
+            "super_failure": ['4']
+        },
+        {
+            "name": "Positive Affirmations",
+            "health_effect": 0,
+            "nerves_effect": 10,
+            "to_player": False,
+            "super_success": ['1'],
+            "success": ['2'],
+            "failure": ['3'],
+            "super_failure": ['4']
+        }
+    ]
+]
 bosses = [
     {
         "name": "The Voice In Your Head",
@@ -174,7 +201,6 @@ bosses = [
         "min_nerves": 25,
         "attack_potency": 1,
         "victory_item": items[0],
-        'victory_attack': prize_attacks[0],
         "location": 0,
         'index': 0,
         "intro": ["Battle GO!"],
@@ -186,63 +212,6 @@ bosses = [
         'encountered': False
     }
 ]
-boss_attacks = [
-    [
-        {
-            "name": "Terrible Pessimism",
-            "health_effect": 0,
-            "nerves_effect": -15,
-            "health_overtime_effect": 0,
-            "nerves_overtime_effect": 0,
-            "duration": 0,
-            "to_player": True,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
-        },
-        {
-            "name": "Pep Talk",
-            "health_effect": 10,
-            "nerves_effect": 0,
-            "health_overtime_effect": 0,
-            "nerves_overtime_effect": 0,
-            "duration": 0,
-            "to_player": False,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
-        },
-        {
-            "name": "Unbearable Yell",
-            "health_effect": -10,
-            "nerves_effect": -5,
-            "health_overtime_effect": 0,
-            "nerves_overtime_effect": 0,
-            "duration": 0,
-            "to_player": True,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
-        },
-        {
-            "name": "Positive Affirmations",
-            "health_effect": 0,
-            "nerves_effect": 10,
-            "health_overtime_effect": 0,
-            "nerves_overtime_effect": 0,
-            "duration": 0,
-            "to_player": False,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
-        }
-    ]
-]
-
 
 def Dialogue(dialogue):
     for line in dialogue:
@@ -540,6 +509,24 @@ def Fight(boss):
                     player_stats['max_nerves'] += (player_stats["bravery"] - 1) * 5
                     player_stats['min_nerves'] += (player_stats['bravery'] - 1) * 5
                     Dialogue(f'Your durability is now at Level {player_stats['bravery']}!')
+            
+            attacks = []
+            i = 0
+    
+            for attack in boss_attacks[boss['index']]:
+                attacks.append(attack)
+
+            attack_to_learn = boss_attacks[boss['index']][ShowOptions(attacks, 'Which attack would you like to learn? ', False)]
+            
+            #This is so the player has an empty space for attack selection
+            if boss['name'] == "The Voice In Your Head":
+                player_attacks.append({'name': 'Empty Space', 'to_player': False})
+
+            attack_to_replace = player_attacks[ShowOptions(player_attacks, 'Which attack would you like to replace? ', False)]
+
+            player_attacks[attack_to_replace] = boss_attacks[attack_to_learn]
+
+            Dialogue([f'You have learned "{boss_attacks[attack_to_learn]['name']}" in place of "{player_attacks[attack_to_replace]['name']}"'])
 
             # Reset Player health and nerves and mark boss as defeated
             player_stats["health"] = player_stats['max_health']
@@ -556,8 +543,7 @@ if not skip_intro:
           'A man only known as "N. Cage" stole the constitution of EMUSA, sending the country into chaos.',
           'Apparently, he meant to steal a different document, so one thing lead to another, and the 5 pages of the constitution were spread across the land.',
           'Naturally, the most powerful of the nation jumped at the opportunity for power, and stole the pages near to them',
-          'You are a new intern at the White House...',
-          '*T*    *W*    *O*',
+          'You are a new intern at the White House.',
           'So before you knew it, you were sent off to retrieve the pages and save EMUSA.',
           '...',
           'Who am I?',
@@ -586,7 +572,7 @@ while True:
             input('You have a new item! (1/1)')
             input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
 
-    match ShowOptions(['Move Locations', 'Check Inventory'], 'What would you like to do? ', False):
+    match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks'], 'What would you like to do? ', False):
         case 0:
             try:
                 print(f"Since you're currently at {locations[position]}, you can go to: ")
@@ -600,5 +586,10 @@ while True:
             print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
             input('Type anything to go back. ')
-
+        case 2:
+            ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", True)
+            input('Enter anything to go back. ')
+        case 3:
+            ShowOptions(player_attacks, '', True)
+            input('Enter anything to go back. ')
     
