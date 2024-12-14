@@ -2,14 +2,15 @@ import random
 
 # Debug Values. Do not apply to game.
 skip_intro = True
-instawin = True
+instawin = False
+print_all_dialogue = False
 
 game_intro = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
            Enter Anything to Start
                       '''
   
-position = 0
+position = 1
 locations = [
     "Just a White Void",
     "Spookyland",
@@ -62,6 +63,14 @@ items = [
         'is_item': True
     },
     {
+        'name': 'Skull of Mr. Skellybones',
+        'health_effect': -10,
+        'nerves_effect': -40,
+        'to_player': True,
+        'use_text': ['Blank'],
+        'is_item': True
+    },
+    {
         "name": "Laser Blaster!",
         "health_effect": -30,
         "nerves_effect": 0,
@@ -85,14 +94,15 @@ inventory = []
 player_stats = {
     "health": 100,
     "nerves": 100,
-    "strength": 1,
-    "bravery": 1,
-    "durability": 1,
-    "recovery": 1,
+    "strength": 0,
+    "bravery": 0,
+    "durability": 0,
+    "recovery": 0,
     "max_health": 100,
     "max_nerves": 100,
     "min_nerves": 25,
     "attack_potency": 1,
+    'recovery_potency': 1
 }
 player_attacks = [
     {
@@ -132,6 +142,7 @@ player_attacks = [
         "is_item": False
     },
 ]
+overall_level = 0
 
 if instawin:
     player_attacks.append({
@@ -148,6 +159,7 @@ if instawin:
     })
 
 boss_attacks = [
+    # The Voice in Your Head
     [
         {
             "name": "Terrible Pessimism",
@@ -189,13 +201,41 @@ boss_attacks = [
             "failure": ['3'],
             "super_failure": ['4']
         }
+    ],
+    # Mr. Skellybones
+    [
+        {
+            "name": "Funny Bone Blow",
+            "health_effect": -15,
+            "nerves_effect": -5,
+            "to_player": True,
+            "super_success": ["With what you think is a deadpan expression", "(you can't really tell because he's just a faceless skeleton)", 
+                              "He lightly taps your funny bone.", "You look at him confused but suddenly... what feels like a jolt of lightening traverses through your arm and-",
+                              '...', '...', 'You good?', 'It seems like your brain was too focused on writhing in very unfunny pain to remember to conjure my existence.', "Uh, don't do that again.",
+                              "It's kind of a buzzkill."],
+            "success": ['He hits your funny bone in a very unfunny way'],
+            "failure": ['He tries to hit your funny bone in a very unfunny way but he only lightly taps it'],
+            "super_failure": ['He tries to hit your funny bone but he trips and hits his own funny bone.', 'He lays on the ground immobilized as you look down at him with pity.',
+                              '"THIS IS NOT FUNNY RAAAAAAH"', 'Eventually he gets his footing and the battle continues.']
+        },
+        {
+            "name": "Disturbing Truth",
+            "health_effect": 0,
+            "nerves_effect": -15,
+            "to_player": True,
+            "super_success": ['He walks up to you and whispers to you...', '"Raaaah."', '[My lawyer has advised me to remove the following dialogue]'],
+            "success": ['"Raaaah. 2017 was 7 years ago."', 'You feel disturbed.'],
+            "failure": ['"Raaaah. Some people are poor."', 'You feel a little bummed out.'],
+            "super_failure": ['Mr. Skellybones tries to disturb you but it ended up being such a blatant truth that you feel nothing.', 'You look at him with a deadpan expression.', 
+                              'He feels a little embarressed.']
+        },
     ]
 ]
 bosses = [
     {
         "name": "The Voice In Your Head",
         "health": 50,
-        "nerves": 50,
+        "nerves": 100,
         "max_health": 100,
         "max_nerves": 100,
         "min_nerves": 25,
@@ -210,12 +250,42 @@ bosses = [
                              "I'll never leave..."],
         "is_defeated": False,
         'encountered': False
+    },
+    {
+        "name": "Mr. Skellybones",
+        "health": 40 + (20 * overall_level),
+        "nerves": 100,
+        "max_health": 100,
+        "max_nerves": 100,
+        "min_nerves": 25,
+        "attack_potency": 1,
+        "victory_item": items[1],
+        "location": 1,
+        'index': 1,
+        "intro": ["As you traverse the spookyland, you can feel chills go down your spine", "You've always heard tales about the scariness of spookyland but you never believed it",
+                  'I mean, back in grade school folks would say that spookyland was ruled by a living skeleton called Mr. Skellybones.', 'How absurd...', 
+                  'How could you tell it is a "Mr." if it is just bones?', "It just doesn't make sense", 'Anyway, you cautiously traverse the dark and cool landsc-',
+                  '"RAAHHHHHHHHHHHHHH!"', '"IT IS I, MR. SKELLYBONES AND..."', '"I AM A MAN"', '"RAHHHHHHHHHHHHH!"', 
+                  "AAAAA!", "You quiver in fear, hoping to pass through peacefully. Hopefully this detour will end so we can go back to getting the pa-", 
+                  'You see a piece of parchment in his hand.', 'Uh oh...'],
+        "boss_victory_text": [''],
+        "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
+                             "And don't worry, since I don't exist, I'm completely fine!", 
+                             "I'll never leave..."],
+        "is_defeated": False,
+        'encountered': False
     }
 ]
 
 def Dialogue(dialogue):
-    for line in dialogue:
-        input(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
+    if not print_all_dialogue:
+        for line in dialogue:
+            input(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
+    else:
+        for line in dialogue:
+            print(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
+        else:
+            print('Enter anything to continue')
       
 def ShowOptions(choices, selection_prompt, display_only):
     input_taken = False
@@ -354,8 +424,8 @@ def TakeAction(action, nerves_value, from_player, boss):
         nerves_effect = action['nerves_effect'] * nerve_multipler
 
         if action['to_player']:
-            player_stats['health'] += health_effect
-            player_stats['nerves'] += nerves_effect
+            player_stats['health'] += health_effect * player_stats['recovery_potency']
+            player_stats['nerves'] += nerves_effect * player_stats['recovery_potency']
         
             print(f'You healed {health_effect} health.')
             print(f'You gained {nerves_effect} nerves.')
@@ -388,8 +458,8 @@ def TakeAction(action, nerves_value, from_player, boss):
         inventory.pop(inventory.index(action))
     # If the action was not from a player, it will be handled as an item and use the boss's pool of attacks
     else:
-        health_effect = action['health_effect'] * nerve_multipler
-        nerves_effect = action['nerves_effect'] * nerve_multipler
+        health_effect = action['health_effect'] * (nerve_multipler + (0.1 * overall_level))
+        nerves_effect = action['nerves_effect'] * (nerve_multipler + (0.1 * overall_level))
 
         if action['to_player']:
             player_stats['health'] += health_effect
@@ -413,7 +483,7 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
-def Fight(boss):
+def Fight(boss, level):
     turn = -1
     fight_finished = False
     player_action = {}
@@ -498,35 +568,39 @@ def Fight(boss):
             match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}'], 'Which stat do you wish to level up? ', False):
                 case 0:
                     player_stats['strength'] += 1
-                    player_stats['attack_potency'] += (player_stats["strength"] - 1) * 0.25
-                    Dialogue(f'Your strength is now at Level {player_stats['strength']}!')
+                    player_stats['attack_potency'] += (player_stats["strength"] - 1) * 0.1
+                    Dialogue([f'Your strength is now at Level {player_stats['strength']}!'])
                 case 2:
                     player_stats['durability'] += 1
                     player_stats['max_health'] += (player_stats['durability'] - 1) * 15
-                    Dialogue(f'Your durability is now at Level {player_stats['durability']}!')
+                    Dialogue([f'Your durability is now at Level {player_stats['durability']}!'])
                 case 1:
                     player_stats['bravery'] += 1
                     player_stats['max_nerves'] += (player_stats["bravery"] - 1) * 5
                     player_stats['min_nerves'] += (player_stats['bravery'] - 1) * 5
-                    Dialogue(f'Your durability is now at Level {player_stats['bravery']}!')
-            
-            attacks = []
-            i = 0
-    
-            for attack in boss_attacks[boss['index']]:
-                attacks.append(attack)
+                    Dialogue([f'Your durability is now at Level {player_stats['bravery']}!'])
+                case 3:
+                    player_stats['recovery'] += 1
+                    player_stats['recovery_potency'] += (player_stats["recovery"] - 1) * 0.1
 
-            attack_to_learn = boss_attacks[boss['index']][ShowOptions(attacks, 'Which attack would you like to learn? ', False)]
+            level += 1
+            
+            #attacks = []
+    
+            #for attack in boss_attacks[boss['index']]:
+            #    attacks.append(attack)
+
+            #attack_to_learn = boss_attacks[boss['index']][ShowOptions(attacks, 'Which attack would you like to learn? ', False)]
             
             #This is so the player has an empty space for attack selection
-            if boss['name'] == "The Voice In Your Head":
-                player_attacks.append({'name': 'Empty Space', 'to_player': False})
+            #if boss['name'] == "The Voice In Your Head":
+            #    player_attacks.append({'name': 'Empty Space', 'to_player': False})
 
-            attack_to_replace = player_attacks[ShowOptions(player_attacks, 'Which attack would you like to replace? ', False)]
+            #attack_to_replace_index = ShowOptions(player_attacks, 'Which attack would you like to replace? ', False)
 
-            player_attacks[attack_to_replace] = boss_attacks[attack_to_learn]
+            #player_attacks[attack_to_replace_index] = attack_to_learn
 
-            Dialogue([f'You have learned "{boss_attacks[attack_to_learn]['name']}" in place of "{player_attacks[attack_to_replace]['name']}"'])
+            #Dialogue([f'You have learned "{attack_to_learn['name']}"'])
 
             # Reset Player health and nerves and mark boss as defeated
             player_stats["health"] = player_stats['max_health']
@@ -557,20 +631,18 @@ if not skip_intro:
     Dialogue([f"Well then, it's a pleasure to meet you {name}.",
           "Now, let's save America!"])
 
-
 while True:
 
     if position not in places_been:
         places_been.append(position)
         for boss in bosses:
             if boss["location"] == position and boss["is_defeated"] == False:
-                Fight(boss)
+                Fight(boss, overall_level)
                 break
         else:
-            Dialogue(location_dialogue[position])
             inventory.append(location_items[position])
             input('You have a new item! (1/1)')
-            input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
+            input(ShowOptions(location_items[position], 'Test', display_only=True))
 
     match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks'], 'What would you like to do? ', False):
         case 0:
