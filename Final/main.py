@@ -2,7 +2,7 @@ import random
 
 # Debug Values. Do not apply to game.
 skip_intro = True
-instawin = False
+instawin = True
 print_all_dialogue = False
 
 game_intro = '''
@@ -10,7 +10,7 @@ game_intro = '''
            Enter Anything to Start
                       '''
   
-position = 1
+position = 0
 locations = [
     "Just a White Void",
     "Spookyland",
@@ -85,7 +85,7 @@ location_items = [
     # Spookyland [1] (No Item)
     {},
     # Area 51 [2]
-    items[1]
+    items[2]
 ]
 
 name = 'You'
@@ -102,7 +102,8 @@ player_stats = {
     "max_nerves": 100,
     "min_nerves": 25,
     "attack_potency": 1,
-    'recovery_potency': 1
+    'recovery_potency': 1,
+    'pages': 0
 }
 player_attacks = [
     {
@@ -206,7 +207,7 @@ boss_attacks = [
     [
         {
             "name": "Funny Bone Blow",
-            "health_effect": -15,
+            "health_effect": -10,
             "nerves_effect": -5,
             "to_player": True,
             "super_success": ["With what you think is a deadpan expression", "(you can't really tell because he's just a faceless skeleton)", 
@@ -228,6 +229,19 @@ boss_attacks = [
             "failure": ['"Raaaah. Some people are poor."', 'You feel a little bummed out.'],
             "super_failure": ['Mr. Skellybones tries to disturb you but it ended up being such a blatant truth that you feel nothing.', 'You look at him with a deadpan expression.', 
                               'He feels a little embarressed.']
+        },
+        {
+            "name": "Got Milk?",
+            "health_effect": 20,
+            "nerves_effect": 0,
+            "to_player": False,
+            "super_success": ['He reaches behinda grave and grabs a jug of Kirkland milk.', '"Raaaah. Only Kirkland Milk makes feel this good."', 
+            '"You can find Kirkland Milk at your local Costco for only $4.29"', 'He tilts his skull in what you think is a wink and drinks the whole cartoon.', 
+            'He looks significantly more health y.'],
+            "success": ['He reaches behind a grave and grabs a jug of Great Value(TM) milk.', 'He drinks it and looks revitalized.'],
+            "failure": ['He reaches behind a grave and grabs a jug of expired Great Value(TM) milk.', "He drinks it and seems disgusted, you can't tell because he's just a skeleton."],
+            "super_failure": ['He reaches behind a grave and grabs an empty jug of Kirkland milk.', 'He looks at the jug with despair.', '"Raaaah. Why did you have to leave me too dear Kirkland Milk"',
+            'You reconcile him as he despairs', '"Raaaah. Thank you"', "Now that he's feeling better, you hug and then continue the fight"]
         },
     ]
 ]
@@ -253,7 +267,7 @@ bosses = [
     },
     {
         "name": "Mr. Skellybones",
-        "health": 40 + (20 * overall_level),
+        "health": 80 + (20 * overall_level),
         "nerves": 100,
         "max_health": 100,
         "max_nerves": 100,
@@ -268,7 +282,7 @@ bosses = [
                   '"RAAHHHHHHHHHHHHHH!"', '"IT IS I, MR. SKELLYBONES AND..."', '"I AM A MAN"', '"RAHHHHHHHHHHHHH!"', 
                   "AAAAA!", "You quiver in fear, hoping to pass through peacefully. Hopefully this detour will end so we can go back to getting the pa-", 
                   'You see a piece of parchment in his hand.', 'Uh oh...'],
-        "boss_victory_text": [''],
+        "boss_victory_text": ['Hi'],
         "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
                              "And don't worry, since I don't exist, I'm completely fine!", 
                              "I'll never leave..."],
@@ -342,7 +356,7 @@ def ShowOptions(choices, selection_prompt, display_only):
                 continue
 
             if player_choice < 0 or player_choice > (len(choices) - 1):
-                continue
+                return -1
         
         return player_choice
        
@@ -516,11 +530,19 @@ def Fight(boss, level):
                     if not inventory:
                         input("Welp, there's nothing here, back to the main battle menu. ")
                         continue
-                    player_action = inventory[ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", False)]
-                    TakeAction(player_action, player_stats['nerves'], True, boss)
+                    player_action = ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", False)
+
+                    if player_action < 0:
+                        continue
+
+                    TakeAction(inventory[player_action], player_stats['nerves'], True, boss)
                 case 2:        
-                    player_action = player_attacks[ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)]
-                    TakeAction(player_action, player_stats['nerves'], True, boss)        
+                    player_action = ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)
+
+                    if player_action < 0:
+                        continue
+
+                    TakeAction(player_attacks[player_action], player_stats['nerves'], True, boss)        
                 
             input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
             turn += 1  
@@ -538,7 +560,6 @@ def Fight(boss, level):
             
             if rerolls < 3:
                 if player_action["nerves_effect"] < 0 and not player_action['to_player'] and boss_attack['nerves_effect'] <= 0:
-                    print("Rerolled!")
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                     rerolls += 1
 
@@ -565,25 +586,26 @@ def Fight(boss, level):
             input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
 
             # Have player choose what stat to level up
-            match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}'], 'Which stat do you wish to level up? ', False):
+            match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}', f'Recovery: {player_stats['recovery']}'], 'Which stat do you wish to level up? ', False):
                 case 0:
                     player_stats['strength'] += 1
-                    player_stats['attack_potency'] += (player_stats["strength"] - 1) * 0.1
+                    player_stats['attack_potency'] += (player_stats["strength"]) * 0.1
                     Dialogue([f'Your strength is now at Level {player_stats['strength']}!'])
                 case 2:
                     player_stats['durability'] += 1
-                    player_stats['max_health'] += (player_stats['durability'] - 1) * 15
+                    player_stats['max_health'] += (player_stats['durability']) * 15
                     Dialogue([f'Your durability is now at Level {player_stats['durability']}!'])
                 case 1:
                     player_stats['bravery'] += 1
-                    player_stats['max_nerves'] += (player_stats["bravery"] - 1) * 5
-                    player_stats['min_nerves'] += (player_stats['bravery'] - 1) * 5
+                    player_stats['max_nerves'] += (player_stats["bravery"]) * 5
+                    player_stats['min_nerves'] += (player_stats['bravery']) * 5
                     Dialogue([f'Your durability is now at Level {player_stats['bravery']}!'])
                 case 3:
                     player_stats['recovery'] += 1
-                    player_stats['recovery_potency'] += (player_stats["recovery"] - 1) * 0.1
+                    player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.1
 
             level += 1
+            player_stats['pages'] += 1
             
             #attacks = []
     
@@ -642,7 +664,8 @@ while True:
         else:
             inventory.append(location_items[position])
             input('You have a new item! (1/1)')
-            input(ShowOptions(location_items[position], 'Test', display_only=True))
+            ShowOptions([location_items[position]], 'Test', display_only=True)
+            input('Press anything to continue')
 
     match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks'], 'What would you like to do? ', False):
         case 0:
@@ -656,7 +679,7 @@ while True:
         case 1:
             print(f"-=-=-=-{name}'s Stats-=-=-=-")
             print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
-            print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
+            print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
             input('Type anything to go back. ')
         case 2:
             ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", True)
