@@ -1,15 +1,16 @@
 import random
 
 # Debug Values. Do not apply to game.
-skip_intro = True
-instawin = True
+skip_intro = False
+instawin = False
 print_all_dialogue = False
 
-game_intro = '''
+game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
            Enter Anything to Start
                       '''
-  
+name = 'You'
+
 position = 0
 locations = [
     "Just a White Void",
@@ -52,22 +53,28 @@ location_dialogue = [
 items = [
     {
         "name": "High Hopes and Determination",
+        'description': "Well, this isn't quite what you signed up for but your main character syndrome stops you from letting your country fall.",
         "health_effect": 10,
         "nerves_effect": 40,
         "to_player": True,
         'use_text': ["While on the ropes, it all comes back to you in a flash.", 
 "You remember who you truly are.",
 "You are not someone to be defeated by mere fatal injuries.",
-"This journey has reminded you that, not only you have friends and a family to come back to, but everyone in this country you've been fighting for has people to come back to as well",
+"This journey has reminded you that, not only you have friends and a family to come back to, but everyone in this country you've been fighting for has people to come back to as well.",
 "You are suddenly filled with high hopes and determination."],
         'is_item': True
     },
     {
         'name': 'Skull of Mr. Skellybones',
+        'description': f'"Raaah. Thank you {name}. Let us save our country. For Spookyland!"',
         'health_effect': -10,
         'nerves_effect': -40,
         'to_player': True,
-        'use_text': ['Blank'],
+        'use_text': ['You pull out the skull of Mr. Skellybones.', '"RAAAAAAAAHHHHHHHH! I AM MR. SKELLYBONES AND I AM A MAN!"', 
+        '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
+        "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
+        'As they start muttering to themselves about the ship of theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
+        'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job {name}!'],
         'is_item': True
     },
     {
@@ -88,7 +95,6 @@ location_items = [
     items[2]
 ]
 
-name = 'You'
 inventory = []
 
 player_stats = {
@@ -103,7 +109,8 @@ player_stats = {
     "min_nerves": 25,
     "attack_potency": 1,
     'recovery_potency': 1,
-    'pages': 0
+    'pages': 0,
+    'level': 0,
 }
 player_attacks = [
     {
@@ -143,7 +150,6 @@ player_attacks = [
         "is_item": False
     },
 ]
-overall_level = 0
 
 if instawin:
     player_attacks.append({
@@ -207,8 +213,8 @@ boss_attacks = [
     [
         {
             "name": "Funny Bone Blow",
-            "health_effect": -10,
-            "nerves_effect": -5,
+            "health_effect": -15,
+            "nerves_effect": 0,
             "to_player": True,
             "super_success": ["With what you think is a deadpan expression", "(you can't really tell because he's just a faceless skeleton)", 
                               "He lightly taps your funny bone.", "You look at him confused but suddenly... what feels like a jolt of lightening traverses through your arm and-",
@@ -250,42 +256,61 @@ bosses = [
         "name": "The Voice In Your Head",
         "health": 50,
         "nerves": 100,
-        "max_health": 100,
+        "max_health": 50,
         "max_nerves": 100,
         "min_nerves": 25,
         "attack_potency": 1,
         "victory_item": items[0],
         "location": 0,
         'index': 0,
-        "intro": ["Battle GO!"],
+        "intro": ["...", 'Wait a second...', "You don't know how to fight, do you?", "Well, these guys are not going to willing give up their pages so let's learn.",
+        "I'm sure you're already familiar with how health works, but people often underestimate how important it is to keep a cool head.", 
+        "You see, if you let your nerves get too low, you're attacks' effectiveness will likely be greatly reduced, or worse, they'll completely fail.",
+        "If you keep cool and have high nerves, you're attacks won't only be likely to land properly, they may even be more powerful.", 
+        'The same goes for your enemies. So make sure to maintain high nerves for yourself, and reduce their nerves.', 
+        "Don't worry if you get too nervous, you will likely have items you collect from bosses or location that you can use as hail marys, regardless of your nerves.", 
+        "Although, you can only use them once so be conservative with your item use.",
+        "Also, if things get too bad, there's a minimum value your nerves can fall under. Although sadly, your enemies also have a minimum nerves value.",
+        "Now that we have that settled, let's begin! I'll be your first boss so you can apply your new knowledge."],
         "boss_victory_text": ["Oh!", "How did you...", "I don't even exist!", "Wait, if you're gone, and I'm in your head, what does that mean for me?", "...", "Uh oh."],
         "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
-                             "And don't worry, since I don't exist, I'm completely fine!", 
-                             "I'll never leave..."],
+                             "And don't worry, since I don't exist, I'm completely fine!", "I'll never leave...", 
+                             "Anyways, now that you've defeated me, you will get my item and be given the opportunity to upgrade one of your stats.", 'You have 4 stats:',
+                             'Strength, which increases the power of your offensive attacks,', 'Bravery, which increases your maximum and minimum amount of nerves,',
+                             'Durability, which increase your maximum health,', 'And Recovery, which increase the power of attacks that boost you.', "Usually you will get a page from defeated bosses but I don't have any pages to give-",
+                             "You look down at your feet to see you're standing on a page of the constitution.", "Well that's convienient."],
         "is_defeated": False,
         'encountered': False
     },
     {
         "name": "Mr. Skellybones",
-        "health": 80 + (20 * overall_level),
+        "health": 60,
         "nerves": 100,
-        "max_health": 100,
+        "max_health": 80,
         "max_nerves": 100,
         "min_nerves": 25,
         "attack_potency": 1,
         "victory_item": items[1],
         "location": 1,
         'index': 1,
-        "intro": ["As you traverse the spookyland, you can feel chills go down your spine", "You've always heard tales about the scariness of spookyland but you never believed it",
+        "intro": ["As you traverse the spookyland, you can feel chills go down your spine", 'As you go, you see a variety of ghouls, ghosts, zombies, and skeletons living their lives.'
+                  "You've always heard tales about the scariness of spookyland but you never believed it",
                   'I mean, back in grade school folks would say that spookyland was ruled by a living skeleton called Mr. Skellybones.', 'How absurd...', 
                   'How could you tell it is a "Mr." if it is just bones?', "It just doesn't make sense", 'Anyway, you cautiously traverse the dark and cool landsc-',
                   '"RAAHHHHHHHHHHHHHH!"', '"IT IS I, MR. SKELLYBONES AND..."', '"I AM A MAN"', '"RAHHHHHHHHHHHHH!"', 
                   "AAAAA!", "You quiver in fear, hoping to pass through peacefully. Hopefully this detour will end so we can go back to getting the pa-", 
                   'You see a piece of parchment in his hand.', 'Uh oh...'],
-        "boss_victory_text": ['Hi'],
-        "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
-                             "And don't worry, since I don't exist, I'm completely fine!", 
-                             "I'll never leave..."],
+        "boss_victory_text": ['"Raaaah. No one can withstand Mr. Skellybones!"', '"Their *poor nerves* will always be their downfall!"'],
+        "boss_defeat_text": ['The skeleton looks up at you and suddenly collapses.', 'His bones are everywhere.', '"Raaaah, you have defeated me. What do you wish to do with me?"',
+        'You walk to his hand and grab the page of the constitution and you begin to walk away.', 
+        '"Raaaah. I see. Spookyland has been long neglected these days. We have not been as scary as we used to since my father retired"', 
+        '"Raaaah. I hoped that I could hold the government hostage, so that they would support my people and I."', "Just a reminder, you have the page now, you can go now.",
+        '"Raaaah. You have no reason to fulfill any request from me, but I ask for my people, please do not let us fall into the shadows"', 'Well, that sucks for him, you walk away and-', 
+        'What are you doing?', 'You nod and gently pat him on the head.', '"Raaaah. Thank you. If you are truly dedicated to saving Spookyland, wherever you go, take me with you and I will assist you as best as I can."', 
+        "You ignore the skeleton who was attacking you just 5 minutes ago because that's the normal thing to-",
+        'Are you serious?', 'You pick up his skull and nod again.', '"Raaaah. Tell me, what is your name, honorable one"', 
+        f'You point to your name tag that reads "{name}: White House Unpaid Intern"', f'"Thank you {name}"'
+        'Well, fine then, I guess he may be useful in battle.'],
         "is_defeated": False,
         'encountered': False
     }
@@ -434,8 +459,8 @@ def TakeAction(action, nerves_value, from_player, boss):
        
     # Verifies whether the attack came from the player or boss
     if from_player and not action['is_item']:
-        health_effect = action['health_effect'] * nerve_multipler
-        nerves_effect = action['nerves_effect'] * nerve_multipler
+        health_effect = (action['health_effect'] * nerve_multipler)
+        nerves_effect = (action['nerves_effect'] * nerve_multipler)
 
         if action['to_player']:
             player_stats['health'] += health_effect * player_stats['recovery_potency']
@@ -452,7 +477,7 @@ def TakeAction(action, nerves_value, from_player, boss):
 
     elif from_player and action['is_item']:
 
-        health_effect = action['health_effect'] 
+        health_effect = action['health_effect']
         nerves_effect = action['nerves_effect']
 
         Dialogue(user_text)
@@ -472,8 +497,8 @@ def TakeAction(action, nerves_value, from_player, boss):
         inventory.pop(inventory.index(action))
     # If the action was not from a player, it will be handled as an item and use the boss's pool of attacks
     else:
-        health_effect = action['health_effect'] * (nerve_multipler + (0.1 * overall_level))
-        nerves_effect = action['nerves_effect'] * (nerve_multipler + (0.1 * overall_level))
+        health_effect = (action['health_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
+        nerves_effect = (action['nerves_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
 
         if action['to_player']:
             player_stats['health'] += health_effect
@@ -497,96 +522,111 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
-def Fight(boss, level):
+def Fight(boss):
     turn = -1
     fight_finished = False
     player_action = {}
+    rewards_recieved = False
 
     boss['encountered'] = True
+    
+    boss['max_health'] += 20 * player_stats['level']
+    boss['health'] = boss['max_health']
+    
 
     while not fight_finished:
 
-        if turn < 0:
-            Dialogue(boss["intro"])
-            turn += 1
-        elif turn % 2 == 0:
-            print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ )')
-            try:
-                action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
-            except:
-                print("Seems like you entered that incorrectly. Let's roll this back. ")
-                continue
-
-            match action:
-                case 0:
-                    print(f"-=-=-=-{name}'s Stats-=-=-=-")
-                    print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
-                    print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
-                    print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
-                    print(f"Health: {boss['health']}/{boss['max_health']} \nNerves: {boss['nerves']}/{boss['max_nerves']} \nMinimum Nerves: {boss['min_nerves']}\nAttack Potency: {boss["attack_potency"]}x")
-                    input("Enter Anything to go back to main battle menu: ")
+        if boss['health'] > 0 and player_stats['health'] > 0:
+            if turn == -1:
+                Dialogue(boss["intro"])
+                turn += 1
+            elif turn % 2 == 0:
+                print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ ')
+                try:
+                    action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
+                except:
+                    print("Seems like you entered that incorrectly. Let's roll this back. ")
                     continue
-                case 1:
-                    if not inventory:
-                        input("Welp, there's nothing here, back to the main battle menu. ")
+
+                match action:
+                    case 0:
+                        print(f"-=-=-=-{name}'s Stats-=-=-=-")
+                        print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
+                        print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
+                        print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
+                        print(f"Health: {boss['health']}/{boss['max_health']} \nNerves: {boss['nerves']}/{boss['max_nerves']} \nMinimum Nerves: {boss['min_nerves']}\nAttack Potency: {boss["attack_potency"]}x")
+                        input("Enter Anything to go back to main battle menu: ")
                         continue
-                    player_action = ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", False)
+                    case 1:
+                        if not inventory:
+                            input("Welp, there's nothing here, back to the main battle menu. ")
+                            continue
+                        player_action = ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", False)
 
-                    if player_action < 0:
-                        continue
+                        if player_action < 0:
+                            continue
 
-                    TakeAction(inventory[player_action], player_stats['nerves'], True, boss)
-                case 2:        
-                    player_action = ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)
+                        TakeAction(inventory[player_action], player_stats['nerves'], True, boss)
+                    case 2:        
+                        player_action = ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)
 
-                    if player_action < 0:
-                        continue
+                        if player_action < 0:
+                            continue
 
-                    TakeAction(player_attacks[player_action], player_stats['nerves'], True, boss)        
+                        TakeAction(player_attacks[player_action], player_stats['nerves'], True, boss)        
                 
-            input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
-            turn += 1  
-        else:
-            boss_attack = {}
-            rerolls = 0
-            boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
+                turn += 1  
+            else:
 
-            # Following If Statements are to ensure the boss doesn't make any redundant moves
-            if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
-                boss_attack =  boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                boss_attack = {}
+                rerolls = 0
+                boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
 
-            if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
-                boss_attack =  boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-            
-            if rerolls < 3:
-                if player_action["nerves_effect"] < 0 and not player_action['to_player'] and boss_attack['nerves_effect'] <= 0:
+                # Following If Statements are to ensure the boss doesn't make any redundant moves
+                if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-                    rerolls += 1
+                    continue
 
-            TakeAction(boss_attack, boss['nerves'], False, boss)
-            input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
-            turn += 1
-        
+                if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
+                    boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                    continue
+            
+                if rerolls < 3:
+                    if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
+                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                        rerolls += 1
+
+                TakeAction(boss_attack, boss['nerves'], False, boss)
+                input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
+                turn += 1
         # Game Over Sequence
-        if player_stats['health'] <= 0:
+        elif player_stats['health'] <= 0:
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
             Dialogue(boss['boss_victory_text'])
-            places_been.pop()
             position = 0
             fight_finished = True
-        
         # Victory Sequence
         elif boss['health'] <= 0:
             Dialogue(boss['boss_defeat_text'])
 
-            # Give Player Reward Item
-            inventory.append(boss['victory_item'])
-            input('You have a new item! (1/1)')
-            input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
+            if rewards_recieved == False:
+                
+                player_stats['pages'] += 1
+
+                Dialogue([f'You now have {player_stats['pages']}/6 pages!'])
+                
+                # Give Player Reward Item
+                inventory.append(boss['victory_item'])
+                input('You have a new item! (1/1)')
+                input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
+                rewards_recieved = True
 
             # Have player choose what stat to level up
             match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}', f'Recovery: {player_stats['recovery']}'], 'Which stat do you wish to level up? ', False):
+                case -1:
+                    continue
                 case 0:
                     player_stats['strength'] += 1
                     player_stats['attack_potency'] += (player_stats["strength"]) * 0.1
@@ -603,9 +643,6 @@ def Fight(boss, level):
                 case 3:
                     player_stats['recovery'] += 1
                     player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.1
-
-            level += 1
-            player_stats['pages'] += 1
             
             #attacks = []
     
@@ -625,13 +662,16 @@ def Fight(boss, level):
             #Dialogue([f'You have learned "{attack_to_learn['name']}"'])
 
             # Reset Player health and nerves and mark boss as defeated
+
+            player_stats['level'] += 1
+
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
             boss['is_defeated'] = True
             fight_finished = True
 
 if not skip_intro:
-    input(game_intro)
+    input(game_title_screen)
     Dialogue(["Once upon a time,", 
           "There was a great nation known as the Even More United States of America, or EMUSA.", 
           'The nation lived harmonously. Folks from around the nation, from the North Pole to British Texas (which you may know as "Australia") were united under a common love for peace and democracy',
@@ -653,19 +693,22 @@ if not skip_intro:
     Dialogue([f"Well then, it's a pleasure to meet you {name}.",
           "Now, let's save America!"])
 
+Fight(bosses[0])
+
 while True:
 
-    if position not in places_been:
-        places_been.append(position)
+    if position != 0:
         for boss in bosses:
             if boss["location"] == position and boss["is_defeated"] == False:
-                Fight(boss, overall_level)
+                Fight(boss)
                 break
         else:
-            inventory.append(location_items[position])
-            input('You have a new item! (1/1)')
-            ShowOptions([location_items[position]], 'Test', display_only=True)
-            input('Press anything to continue')
+            if position not in places_been:
+                places_been.append(position)
+                inventory.append(location_items[position])
+                input('You have a new item! (1/1)')
+                ShowOptions([location_items[position]], 'Test', display_only=True)
+                input('Press anything to continue')
 
     match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks'], 'What would you like to do? ', False):
         case 0:
@@ -678,8 +721,9 @@ while True:
                 print("Oops! Seems like you entered something incorrectly. Let's try that again")
         case 1:
             print(f"-=-=-=-{name}'s Stats-=-=-=-")
-            print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
+            print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
+            print(f'Pages: {player_stats['pages']}/{player_stats['pages']}')
             input('Type anything to go back. ')
         case 2:
             ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", True)
