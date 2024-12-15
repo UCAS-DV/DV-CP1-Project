@@ -1,8 +1,8 @@
 import random
 
 # Debug Values. Do not apply to game.
-skip_intro = False
-instawin = False
+skip_intro = True
+debug_attacks = True
 print_all_dialogue = False
 
 game_title_screen = '''
@@ -11,7 +11,6 @@ game_title_screen = '''
                       '''
 name = 'You'
 
-position = 0
 locations = [
     "Just a White Void",
     "Spookyland",
@@ -46,8 +45,24 @@ places_to_go = [
 places_been = []
 location_dialogue = [
     ["Boss"],
-    ['Welcome to Spookytown!'],
-    ['Welcome to Area 51!']
+    ["Boss"],
+    ['Due to some unfortunate events, the government was running low on cash so they opened Area 51 to the public for tourism.', 
+    'Of course, you have to sign a massive waiver to get in because of the crazy stuff happening.', 
+    'For example, just last week they were testing to see if radiation from nuclear fission could be used for cereal production and they used tourists to test the quality of the cereal.',
+    '...', "I'm just kidding of course.", "They don't have you sign a waiver.", 
+    "Anyway, Area 51 has been effectively abandoned because apparently government facilities aren't too useful without the government.",
+    'So you shrug and aimlessly wander the facility, trying to find a page but when digging around a bin with the label "Biohazard", you hear a familiar voice', '"Veep bloop glorb?"',
+    "That's right, it's your childhood friend and your neighborhood's resident alien, Zeep Vorp!", '"Vlam yoop blam zeep."', '"Yeem glob tram!"', 
+    "You laugh hysterically. Seems like Zeep hasn't lost his wit!", '"Yam uup glep?"', "You show him a page of the constitution and he suddenly realizes what you're doing.", 
+    '"Zeee, hep jam"', 'He hands you a laser pistol, although it seems that he accidentally left a proton charge on the trigger. Classic Zeep Vorp!', 'You remove the charge, bow in gratitude, and go on your way!', '"Verplum!"'
+    ],
+    ['Out of boredom, you read through a page of the constitution you have and on it you notice that it mentions how the government should treat North Dakota.', 'Wait...', 
+    'North Dakota?!', "There's no way...", 
+    'Apparently the mythical state of North Dakota is not as mythical as commonly thought.', "Maybe the state is real but the sky cities and robot dogs and magic isn't real",
+    "Well, there's no harm in checking for pages there.", "So, before you know it, you're dining with the king of North Dakota in a city 1000 meters up, levitated with magic.",
+    'This is... odd, to say the least.', 'Anyways, you show the king your page and he explains he has not seen anything like it so after you finish eating you decide to go on your way',
+    'He hands you a slab of "Northdakotium" and wishes you safe travels.', 
+    "He forgot to explain to you what it does, assuming that you already know, so you don't really know what to do with it", "It's a nice gift so you're still happy."]
 ]
 
 items = [
@@ -69,20 +84,35 @@ items = [
         'description': f'"Raaah. Thank you {name}. Let us save our country. For Spookyland!"',
         'health_effect': -10,
         'nerves_effect': -40,
-        'to_player': True,
+        'to_player': False,
         'use_text': ['You pull out the skull of Mr. Skellybones.', '"RAAAAAAAAHHHHHHHH! I AM MR. SKELLYBONES AND I AM A MAN!"', 
         '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
         "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
-        'As they start muttering to themselves about the ship of theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
+        'As they start muttering to themselves about the Ship of Theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
         'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job {name}!'],
         'is_item': True
     },
     {
-        "name": "Laser Blaster!",
-        "health_effect": -30,
+        "name": "Laser Blaster",
+        'description': 'A state of the art plasma pistol designed by the best of Vorlom and made in China!',
+        "health_effect": -50,
         "nerves_effect": 0,
         "to_player": False,
-        'use_text': ['Pew Pew!'],
+        'use_text': ['"Pew Pew!"', 'A flurry of deep blue rays of plasma cover your opponent.', 
+        "As your opponent panics as to what to do, you try to fire several more shots but it seems its jammed", 'You look down at the display on the gun. It reads:',
+        '"You have reached the limit for free shots from this weapon. If you wish to fire more, join Laser Premium for $8.99 a week."', 'Gross...', 
+        'You shrug and chuck the blaster at your opponent.', 'It lands and they reel from the collision. They place an icepack on their head and the battle continues.'],
+        'is_item': True,
+    },
+    {
+        "name": "Slab of Northdakotium",
+        'description': "You're not quite sure what to do with it but it's a nice gift.",
+        "health_effect": 50,
+        "nerves_effect": 0,
+        "to_player": True,
+        'use_text': ['In despiration, you pull out your slab of Northdakotium.', "You then pause as you realize you don't really know what to do with it.", 
+        'You shrug and take a bite out of it for some reason?', 'Why was that the first thing that you thought to do?', 
+        'Anyway, after taking a bite out of a literal block of metal, you suddenly feel siginficantly healthier for some reason?', 'Huh.', 'That should not have worked but what works, works, I guess.'],
         'is_item': True,
     }
 ]
@@ -92,7 +122,9 @@ location_items = [
     # Spookyland [1] (No Item)
     {},
     # Area 51 [2]
-    items[2]
+    items[2],
+    # North Dakote [3]
+    items[3]
 ]
 
 inventory = []
@@ -111,6 +143,7 @@ player_stats = {
     'recovery_potency': 1,
     'pages': 0,
     'level': 0,
+    'position': 0
 }
 player_attacks = [
     {
@@ -151,13 +184,25 @@ player_attacks = [
     },
 ]
 
-if instawin:
+if debug_attacks:
     player_attacks.append({
         "name": "Falcon Punch",
         "description": '''Insta-Kill for Debugging''',
         "health_effect": -1000,
         "nerves_effect": -1000,
         'to_player': False,
+        "super_success": ['The Debugging is Debugging Greatly'],
+        "success": ['The Debugging is Debugging'],
+        "failure": ['The Debugging is Kinda Debugging'],
+        "super_failure": ['The Debugging is Not Debugging'],
+        "is_item": False
+    })
+    player_attacks.append({
+        'name': 'Resign',
+        'description': 'Instant Game Over for Debugging',
+        "health_effect": -1000,
+        "nerves_effect": -1000,
+        'to_player': True,
         "super_success": ['The Debugging is Debugging Greatly'],
         "success": ['The Debugging is Debugging'],
         "failure": ['The Debugging is Kinda Debugging'],
@@ -259,7 +304,6 @@ bosses = [
         "max_health": 50,
         "max_nerves": 100,
         "min_nerves": 25,
-        "attack_potency": 1,
         "victory_item": items[0],
         "location": 0,
         'index': 0,
@@ -272,13 +316,16 @@ bosses = [
         "Although, you can only use them once so be conservative with your item use.",
         "Also, if things get too bad, there's a minimum value your nerves can fall under. Although sadly, your enemies also have a minimum nerves value.",
         "Now that we have that settled, let's begin! I'll be your first boss so you can apply your new knowledge."],
+
         "boss_victory_text": ["Oh!", "How did you...", "I don't even exist!", "Wait, if you're gone, and I'm in your head, what does that mean for me?", "...", "Uh oh."],
+
         "boss_defeat_text": ["Wow! Bravo! Now that you know how to battle, it seems like you're ready to save the country and retrieve the pages!", 
                              "And don't worry, since I don't exist, I'm completely fine!", "I'll never leave...", 
                              "Anyways, now that you've defeated me, you will get my item and be given the opportunity to upgrade one of your stats.", 'You have 4 stats:',
                              'Strength, which increases the power of your offensive attacks,', 'Bravery, which increases your maximum and minimum amount of nerves,',
                              'Durability, which increase your maximum health,', 'And Recovery, which increase the power of attacks that boost you.', "Usually you will get a page from defeated bosses but I don't have any pages to give-",
                              "You look down at your feet to see you're standing on a page of the constitution.", "Well that's convienient."],
+
         "is_defeated": False,
         'encountered': False
     },
@@ -289,10 +336,10 @@ bosses = [
         "max_health": 80,
         "max_nerves": 100,
         "min_nerves": 25,
-        "attack_potency": 1,
         "victory_item": items[1],
         "location": 1,
         'index': 1,
+
         "intro": ["As you traverse the spookyland, you can feel chills go down your spine", 'As you go, you see a variety of ghouls, ghosts, zombies, and skeletons living their lives.'
                   "You've always heard tales about the scariness of spookyland but you never believed it",
                   'I mean, back in grade school folks would say that spookyland was ruled by a living skeleton called Mr. Skellybones.', 'How absurd...', 
@@ -300,7 +347,9 @@ bosses = [
                   '"RAAHHHHHHHHHHHHHH!"', '"IT IS I, MR. SKELLYBONES AND..."', '"I AM A MAN"', '"RAHHHHHHHHHHHHH!"', 
                   "AAAAA!", "You quiver in fear, hoping to pass through peacefully. Hopefully this detour will end so we can go back to getting the pa-", 
                   'You see a piece of parchment in his hand.', 'Uh oh...'],
-        "boss_victory_text": ['"Raaaah. No one can withstand Mr. Skellybones!"', '"Their *poor nerves* will always be their downfall!"'],
+
+        "boss_victory_text": ['"Raaaah. No one can withstand Mr. Skellybones!"', 'Hint: Skellybones thrives off of your fear, so keep cool and give him a taste of his own medicine.'],
+
         "boss_defeat_text": ['The skeleton looks up at you and suddenly collapses.', 'His bones are everywhere.', '"Raaaah, you have defeated me. What do you wish to do with me?"',
         'You walk to his hand and grab the page of the constitution and you begin to walk away.', 
         '"Raaaah. I see. Spookyland has been long neglected these days. We have not been as scary as we used to since my father retired"', 
@@ -453,24 +502,33 @@ def TakeAction(action, nerves_value, from_player, boss):
             case 1.5:
                 effectiveness = ['Action was super effective!']
                 Dialogue(user_text + action['super_success'] + effectiveness)
+    elif action['is_item']:
+        Dialogue(user_text + action['use_text'])
     else:
         Dialogue(action['use_text'])
     
        
     # Verifies whether the attack came from the player or boss
     if from_player and not action['is_item']:
-        health_effect = (action['health_effect'] * nerve_multipler)
-        nerves_effect = (action['nerves_effect'] * nerve_multipler)
+
 
         if action['to_player']:
-            player_stats['health'] += health_effect * player_stats['recovery_potency']
-            player_stats['nerves'] += nerves_effect * player_stats['recovery_potency']
+
+            health_effect = action['health_effect'] * nerve_multipler * player_stats['recovery_potency']
+            nerves_effect = action['nerves_effect'] * nerve_multipler * player_stats['recovery_potency']
+
+            player_stats['health'] += health_effect
+            player_stats['nerves'] += nerves_effect
         
             print(f'You healed {health_effect} health.')
             print(f'You gained {nerves_effect} nerves.')
         else:
-            boss['health'] += health_effect * player_stats['attack_potency']
-            boss['nerves'] += nerves_effect * player_stats['attack_potency']
+
+            health_effect = action['health_effect'] * nerve_multipler * player_stats['attack_potency']
+            nerves_effect = action['nerves_effect'] * nerve_multipler * player_stats['attack_potency']
+
+            boss['health'] += health_effect
+            boss['nerves'] += nerves_effect
 
             print(f'You dealt {health_effect * -1} damage.')
             print(f'{boss['name']} lost {nerves_effect * -1} nerves.')  
@@ -522,7 +580,7 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
-def Fight(boss):
+def Fight(boss, player_inventory):
     turn = -1
     fight_finished = False
     player_action = {}
@@ -533,6 +591,7 @@ def Fight(boss):
     boss['max_health'] += 20 * player_stats['level']
     boss['health'] = boss['max_health']
     
+    saved_inventory = player_inventory
 
     while not fight_finished:
 
@@ -541,9 +600,13 @@ def Fight(boss):
                 Dialogue(boss["intro"])
                 turn += 1
             elif turn % 2 == 0:
+                input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
                 print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ ')
                 try:
                     action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
+
+                    if action < 0 or action > 2:
+                        continue
                 except:
                     print("Seems like you entered that incorrectly. Let's roll this back. ")
                     continue
@@ -551,10 +614,10 @@ def Fight(boss):
                 match action:
                     case 0:
                         print(f"-=-=-=-{name}'s Stats-=-=-=-")
-                        print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x")
+                        print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
                         print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
                         print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
-                        print(f"Health: {boss['health']}/{boss['max_health']} \nNerves: {boss['nerves']}/{boss['max_nerves']} \nMinimum Nerves: {boss['min_nerves']}\nAttack Potency: {boss["attack_potency"]}x")
+                        print(f"Health: {boss['health']}/{boss['max_health']} \nNerves: {boss['nerves']}/{boss['max_nerves']} \nMinimum Nerves: {boss['min_nerves']}")
                         input("Enter Anything to go back to main battle menu: ")
                         continue
                     case 1:
@@ -574,11 +637,11 @@ def Fight(boss):
                             continue
 
                         TakeAction(player_attacks[player_action], player_stats['nerves'], True, boss)        
-                
-                input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
+                  
                 turn += 1  
             else:
 
+                input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
                 boss_attack = {}
                 rerolls = 0
                 boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
@@ -586,10 +649,12 @@ def Fight(boss):
                 # Following If Statements are to ensure the boss doesn't make any redundant moves
                 if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                    print(boss_attack['name'])
                     continue
 
                 if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                    print(boss_attack['name'])
                     continue
             
                 if rerolls < 3:
@@ -598,14 +663,18 @@ def Fight(boss):
                         rerolls += 1
 
                 TakeAction(boss_attack, boss['nerves'], False, boss)
-                input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
                 turn += 1
         # Game Over Sequence
         elif player_stats['health'] <= 0:
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
-            Dialogue(boss['boss_victory_text'])
-            position = 0
+            Dialogue(['-!-!-!-GAME OVER-!-!-!-'] + boss['boss_victory_text'] + ["Let's run that back..."])
+            if player_stats['position'] == 0:
+                turn = -1
+                continue
+            print('Here')
+            player_stats['position'] = 0
+            player_inventory = saved_inventory
             fight_finished = True
         # Victory Sequence
         elif boss['health'] <= 0:
@@ -693,30 +762,31 @@ if not skip_intro:
     Dialogue([f"Well then, it's a pleasure to meet you {name}.",
           "Now, let's save America!"])
 
-Fight(bosses[0])
+Fight(bosses[0], inventory)
 
 while True:
 
-    if position != 0:
+    if player_stats['position'] != 0:
         for boss in bosses:
-            if boss["location"] == position and boss["is_defeated"] == False:
-                Fight(boss)
+            if boss["location"] == player_stats['position'] and boss["is_defeated"] == False:
+                Fight(boss, inventory)
                 break
         else:
-            if position not in places_been:
-                places_been.append(position)
-                inventory.append(location_items[position])
+            if player_stats['position'] not in places_been:
+                Dialogue(location_dialogue[player_stats['position']])
+                places_been.append(player_stats['position'])
+                inventory.append(location_items[player_stats['position']])
                 input('You have a new item! (1/1)')
-                ShowOptions([location_items[position]], 'Test', display_only=True)
+                ShowOptions([location_items[player_stats['position']]], 'Test', display_only=True)
                 input('Press anything to continue')
 
-    match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks'], 'What would you like to do? ', False):
+    match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks', 'Settings'], 'What would you like to do? ', False):
         case 0:
             try:
-                print(f"Since you're currently at {locations[position]}, you can go to: ")
-                for place in places_to_go[position]:
+                print(f"Since you're currently at {locations[player_stats['position']]}, you can go to: ")
+                for place in places_to_go[player_stats['position']]:
                     print(f"{place}. {locations[place]}")
-                position = Move(position, int(input("Where would you like to go? ")))
+                player_stats['position'] = Move(player_stats['position'], int(input("Where would you like to go? ")))
             except:
                 print("Oops! Seems like you entered something incorrectly. Let's try that again")
         case 1:
@@ -731,4 +801,13 @@ while True:
         case 3:
             ShowOptions(player_attacks, '', True)
             input('Enter anything to go back. ')
+        case 4:
+            print(f'0. Instant Dialogue [{print_all_dialogue}]')
+            print(f'    Prints all dialogue at once instead of writing individual lines upon player input. Good if you are short on time.')
+
+            if input('What setting would you like to modify (If none, enter anything but the numbers)? ') == '0':
+                if print_all_dialogue:
+                    print_all_dialogue = False
+                else:
+                    print_all_dialogue = True
     
