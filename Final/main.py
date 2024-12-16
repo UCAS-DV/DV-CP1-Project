@@ -1,9 +1,10 @@
 import random
+import math
 
 # Debug Values. Do not apply to game.
 skip_intro = False
-debug_attacks = True
-print_all_dialogue = True
+debug_attacks = False
+print_all_dialogue = False
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -176,7 +177,8 @@ items = [
         "health_effect": 0,
         "nerves_effect": 60,
         "to_player": True,
-        'use_text': [''],
+        'use_text': ["Since you already have 20/20 vision, you figure that if you where your monocle, you'll have 40/20 vision", "That averages out to 1.5x better vision!", 'So you put on the monocle but instead of bettering your vision, you make it blurry.',
+                     'You then take a look at a reflection and you see that you look silly.', 'You feel more relaxed because of your amusement.', 'Although tragically, you drop and shatter the monocle.', 'Nonetheless, you feel better now.'],
         'is_item': True,
     }
 ]
@@ -331,6 +333,35 @@ boss_attacks = [
             "super_failure": ['He reaches behind a grave and grabs an empty jug of Clarkplace milk.', 'He looks at the jug with despair.', '"Raaaah. Why did you have to leave me too dear Kirkland Milk"',
             'You reconcile him as he despairs', '"Raaaah. Thank you"', "Now that he's feeling better, you hug and then continue the fight"]
         },
+    ],
+    # Metaphor for Capitalism
+    [
+        {
+            "name": "Deep Allegory",
+            "health_effect": 0,
+            "nerves_effect": -15,
+            "to_player": True,
+            "super_success": ['"And so, the rat suplexed the snake into the sun, saving the galaxy."', 'You feel extremely confounded at the story he just told.', '"Do you honestly not understand such a simple allegory? You truly are an imbecile."',
+                              'He then walks up to a small child, no older than 4, and tells him the story. The child replies:', '"Wow, thwat was a bwilliant allegowy for the state of amewican society since the adwent of mass media."',
+                              "You've never felt stupider."],
+            "success": ['He tells you a story about a rat, snake, and bird saving the galaxy from a super death laser.', "Apprently it's supposed to be a really deep allegory about something but you don't get it so you feel stupid"],
+            "failure": ["He tries to tell you a story but you can barely hear him because of all of the city noises. You feel confused about what you did hear but you didn't hear all too much so you don't feel too stupid."],
+            "super_failure": ['He tries to tell you a story but he keeps forgetting where he is in the story.', 'It takes him about 45 minutes for him to tell the 10 minute story.']
+        },
+        {
+            "name": "Bribery",
+            "health_effect": -15,
+            "nerves_effect": 0,
+            "to_player": True,
+            "super_success": ['He pulls out his phone from his pocket and calls someone:', "Hello General Monger, would you kindly take care of the gentleman I am currently engaged in combat with? I will reward you greatly if you do so.",
+                              "About 5 minutes later the enterity of main street is nothing but rubble and ash.", "Fortunately, the general completely failed at attacking you, so you're unscaved...", 'Until you trip and scrape your knee.'],
+            "success": ['He pulls out his phone from his pocket and calls someone:', '"Hello Mayor Michells, if you would be so kind as to suplex this gentleman in front of me, I will reward you greatly"', 
+                        'He hangs up and suddenly, you feel someone grab you and suplex you. As you recuperate you see the Metaphor hand the Mayor a briefcase. The Mayor leaves gleefully'],
+            "failure": ["He tries to call someone on his phone but it seems that he has no service, so he just throws a briefcase filled with $100 bills."],
+            "super_failure": ['He tries to call someone on his phone but before he can make the call, a bunch of IRS employees tackle him.', 'Shockingly, the multibillionare has violated several tax codes.', 
+                              'Somehow, he is able to fend off all 23.6 of them on his lonesome using nothing but shear will.', "I'm just kidding, he just threatened to dock their pay because he's friend with Commisioner of Internal Revenue.",
+                              "After they leave, he tries to call someone on his phone but apparently he has no service."]
+        },
     ]
 ]
 bosses = [
@@ -405,13 +436,13 @@ bosses = [
         'encountered': False
     },
     {
-        "name": "A Personification of Capitalism",
+        "name": "A Metaphor for Capitalism",
         "health": 50,
         "nerves": 50,
         "max_health": 120,
         "max_nerves": 120,
         "min_nerves": 15,
-        "victory_item": items[2],
+        "victory_item": items[4],
         "location": 5,
         'index': 2,
 
@@ -421,7 +452,7 @@ bosses = [
         'It quite literally stretches all of the way down to the horizon.', 'As you ponder who such a car would turn, you see well dressed gentleman exit right behind the front of the vehicle.', 
         'In his hand, a piece of parchment.', 'He looks back at you and fear glistens in his eyes.', 'You have garnered quite a reputation after your previous victories.', '"Henchmen, get him!"', 
         'They stand still and after you do a backflip to assert dominance, they scurry off.', '"Imbeciles! You! I will let you know that any attempt to take this page is futile."',
-        '"Get any closer and I will strike you down like I strike down unions!"', 'Ah...', 'I see...', "Seems like you're fighting..."],
+        '"Get any closer and I will strike you down like I strike down unions!"', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'PRETENCIOUS SOCIAL COMMENTARY!'],
 
         "boss_victory_text": ['"You look just as hopeless as my employees after 15 hours of mandatory labor on Christmas. Hehehehe"', 'Hint: The Personification of Capitalism starts off extremely weak. Try to keep him from buffing himself'],
 
@@ -585,8 +616,8 @@ def TakeAction(action, nerves_value, from_player, boss):
 
         if action['to_player']:
 
-            health_effect = action['health_effect'] * nerve_multipler * player_stats['recovery_potency']
-            nerves_effect = action['nerves_effect'] * nerve_multipler * player_stats['recovery_potency']
+            health_effect = math.floor(action['health_effect'] * nerve_multipler * player_stats['recovery_potency'])
+            nerves_effect = math.floor(action['nerves_effect'] * nerve_multipler * player_stats['recovery_potency'])
 
             player_stats['health'] += health_effect
             player_stats['nerves'] += nerves_effect
@@ -595,8 +626,8 @@ def TakeAction(action, nerves_value, from_player, boss):
             print(f'You gained {nerves_effect} nerves.')
         else:
 
-            health_effect = action['health_effect'] * nerve_multipler * player_stats['attack_potency']
-            nerves_effect = action['nerves_effect'] * nerve_multipler * player_stats['attack_potency']
+            health_effect = math.floor(action['health_effect'] * nerve_multipler * player_stats['attack_potency'])
+            nerves_effect = math.floor(action['nerves_effect'] * nerve_multipler * player_stats['attack_potency'])
 
             boss['health'] += health_effect
             boss['nerves'] += nerves_effect
@@ -626,8 +657,8 @@ def TakeAction(action, nerves_value, from_player, boss):
         inventory.pop(inventory.index(action))
     # If the action was not from a player, it will be handled as an item and use the boss's pool of attacks
     else:
-        health_effect = (action['health_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
-        nerves_effect = (action['nerves_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
+        health_effect = math.floor(action['health_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
+        nerves_effect = math.floor(action['nerves_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
 
         if action['to_player']:
             player_stats['health'] += health_effect
@@ -714,26 +745,26 @@ def Fight(boss):
                         TakeAction(player_attacks[player_action], player_stats['nerves'], True, boss)        
                   
                 turn += 1  
-            else:
-
-                input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")  
-                boss_attack = {}
-                rerolls = 0
+                if boss['health'] > 0:
+                    input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")
+            else:                 
                 boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
 
                 # Following If Statements are to ensure the boss doesn't make any redundant moves
                 if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
-                    boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                     continue
 
                 if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
-                    boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                     continue
-            
-                if rerolls < 3:
-                    if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
-                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-                        rerolls += 1
+                
+
+
+                if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
+                    print('Rerolled!')
+                    continue
+                if player_stats['nerves'] <= player_stats['nerves'] / 2 and boss_attack['health_effect'] >= 0:
+                    print('Rerolled 2!')
+                    continue
 
                 TakeAction(boss_attack, boss['nerves'], False, boss)
                 turn += 1
