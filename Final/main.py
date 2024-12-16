@@ -2,9 +2,9 @@ import random
 import math
 
 # Debug Values. Do not apply to game.
-skip_intro = False
-debug_attacks = False
-print_all_dialogue = False
+skip_intro = True
+debug_attacks = True
+print_all_dialogue = True
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -66,7 +66,6 @@ location_dialogue = [
 ]
 
 player_stats = {
-    'name': 'You',
     "health": 100,
     "nerves": 100,
     "strength": 0,
@@ -137,7 +136,7 @@ items = [
     },
     {
         'name': 'Skull of Mr. Skellybones',
-        'description': f'"Raaah. Thank you {player_stats['name']}. Let us save our country. For Spookyland!"',
+        'description': f'"Raaah. Thank you. Let us save our country. For Spookyland!"',
         'health_effect': -10,
         'nerves_effect': -40,
         'to_player': False,
@@ -145,7 +144,7 @@ items = [
         '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
         "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
         'As they start muttering to themselves about the Ship of Theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
-        'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job {player_stats['name']}!'],
+        'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job!'],
         'is_item': True
     },
     {
@@ -232,7 +231,8 @@ reward_attacks = [
         "success": ['You give yourself a pep talk and feel inspired by your own words.'],
         "failure": ['You try to give yourself a pep talk but you suck at public speaking so it proves ineffective,', "even though the only person it's directed to is yourself."],
         "super_failure": ['...', "That was...", 'something.', "Don't beat yourself up about it,", 'just ensure that you will never have to do any sort of public speaking...', 'ever...'
-        "and you'll be fine!"]
+        "and you'll be fine!"],
+        'is_item': False
     },
     {
         "name": "Funny Bone Blow",
@@ -245,8 +245,22 @@ reward_attacks = [
         "failure": ['You try to hit their funny bone in a very unfunny way but you only lightly tap it'],
         "super_failure": ["You try to hit your enemy's funny bone but you miss terribly.", 
         'You fall to the ground from the missed swing and you contemplate why you were even bothering with this quest.',
-        'Your opponent pities you and encourages you to get back into the fight.', 'Eventually, the fight continues.']
+        'Your opponent pities you and encourages you to get back into the fight.', 'Eventually, the fight continues.'],
+        'is_item': False
     },
+    {
+        "name": "Investment",
+        "health_effect": 15,
+        "nerves_effect": -15,
+        "to_player": True,
+        "super_success": ['Despite having absolutely 0 experience in stock trading, you discovered this trick called "Fraud" and you were able to make a ton of money,', 
+                          'which is time,', 'which is health.' ],
+        'success': ['You hesistently decided to invest in stocks of several Wealth200 companies and since time is money and health is time, you were able to increase your health.'],
+        "failure": ['You hesistently decided to invest in stocks based off of advise from several online forums.', 
+                    'By the most incredible stroke of luck the world has ever seen, you were able to profit, but not by much.'],
+        "super_failure": ['You invested in crypto currency.'],
+        'is_item': False
+    }
 ]
 boss_attacks = [
     # The Voice in Your Head
@@ -254,7 +268,7 @@ boss_attacks = [
         {
             "name": "Terrible Pessimism",
             "health_effect": 0,
-            "nerves_effect": -15,
+            "nerves_effect": -10,
             "to_player": True,
             "super_success": ['1'],
             "success": ['2'],
@@ -312,7 +326,7 @@ boss_attacks = [
         {
             "name": "Disturbing Truth",
             "health_effect": 0,
-            "nerves_effect": -15,
+            "nerves_effect": -20,
             "to_player": True,
             "super_success": ['He walks up to you and whispers to you...', '"Raaaah."', '[My lawyer has advised me to remove the following dialogue]'],
             "success": ['"Raaaah. 2017 was 7 years ago."', 'You feel disturbed.'],
@@ -346,7 +360,7 @@ boss_attacks = [
                               "You've never felt stupider."],
             "success": ['He tells you a story about a rat, snake, and bird saving the galaxy from a super death laser.', "Apprently it's supposed to be a really deep allegory about something but you don't get it so you feel stupid"],
             "failure": ["He tries to tell you a story but you can barely hear him because of all of the city noises. You feel confused about what you did hear but you didn't hear all too much so you don't feel too stupid."],
-            "super_failure": ['He tries to tell you a story but he keeps forgetting where he is in the story.', 'It takes him about 45 minutes for him to tell the 10 minute story.']
+            "super_failure": ['He tries to tell you a story but he keeps forgetting where he is in the story.', 'It takes him about 45 minutes for him to tell the 10 minute story.'],
         },
         {
             "name": "Bribery",
@@ -372,6 +386,8 @@ bosses = [
         "max_health": 50,
         "max_nerves": 100,
         "min_nerves": 25,
+        'def_health': 50,
+        'def_nerves': 100,
         "victory_item": items[0],
         "location": 0,
         'index': 0,
@@ -405,9 +421,11 @@ bosses = [
         "name": "Mr. Skellybones",
         "health": 60,
         "nerves": 100,
-        "max_health": 80,
+        "max_health": 60,
         "max_nerves": 100,
         "min_nerves": 25,
+        'def_health': 80,
+        'def_nerves': 100,
         "victory_item": items[1],
         "location": 1,
         'index': 1,
@@ -442,8 +460,10 @@ bosses = [
         "max_health": 120,
         "max_nerves": 120,
         "min_nerves": 15,
+        'def_health': 50,
+        'def_nerves': 50,
         "victory_item": items[4],
-        "location": 5,
+        "location": 6,
         'index': 2,
 
         "intro": ['Welcome to Town City, your home town.', "Why isn't it great to be home!", 'Air: Polluted', "Tap Water: Don't Drink", 'Crime: Of Course', 'Labor Rights: Ignored', "Truly lovely isn't it?",
@@ -693,6 +713,8 @@ def Fight(boss):
 
     saved_inventory = []
     
+    boss['health'] = boss['def_health']
+    boss['nerves'] = boss['def_nerves']
     boss['max_health'] += 20 * player_stats['level']
     boss['health'] = boss['max_health']
 
@@ -705,7 +727,7 @@ def Fight(boss):
                 turn += 1
                 boss['encountered'] = True
             elif turn % 2 == 0:
-                input(f"-+-+-+-+-{player_stats['name']}'s Turn-+-+-+-+-")
+                input(f"-+-+-+-+-Your Turn-+-+-+-+-")
                 print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ ')
                 try:
                     action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
@@ -718,7 +740,7 @@ def Fight(boss):
 
                 match action:
                     case 0:
-                        print(f"-=-=-=-{player_stats['name']}'s Stats-=-=-=-")
+                        print(f"-=-=-=-Your Stats-=-=-=-")
                         print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
                         print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
                         print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
@@ -747,24 +769,36 @@ def Fight(boss):
                 turn += 1  
                 if boss['health'] > 0:
                     input(f"-+-+-+-+-{boss['name']}'s Turn-+-+-+-+-")
-            else:                 
+            else:      
+
                 boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
 
-                # Following If Statements are to ensure the boss doesn't make any redundant moves
-                if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
-                    continue
+                rerolls = 0
 
-                if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
-                    continue
-                
+                while rerolls < 6:
 
+                    # Following If Statements are to ensure the boss doesn't make any redundant moves
+                    if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
+                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                        rerolls += 1
+                        continue
 
-                if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
-                    print('Rerolled!')
-                    continue
-                if player_stats['nerves'] <= player_stats['nerves'] / 2 and boss_attack['health_effect'] >= 0:
-                    print('Rerolled 2!')
-                    continue
+                    if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
+                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
+                        rerolls += 1
+                        continue
+
+                    if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
+                        print('Rerolled!')
+                        rerolls += 1
+                        continue
+                    if player_stats['nerves'] <= player_stats['max_nerves'] / 2 and boss_attack['health_effect'] >= 0:
+                        print('Rerolled 2!')
+                        rerolls += 1
+                        continue
+
+                    break
+                    
 
                 TakeAction(boss_attack, boss['nerves'], False, boss)
                 turn += 1
@@ -772,12 +806,8 @@ def Fight(boss):
         elif player_stats['health'] <= 0:
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
-            if boss['name'] != "A Personification of Capitalism":
-                boss['health'] = boss['max_health']
-                boss['nerves'] = boss['max_nerves']
-            else:
-                boss['health'] = 50
-                boss['nerves'] = 50
+            boss['health'] = boss['def_health']
+            boss['nerves'] = boss['def_nerves']
             Dialogue(['-!-!-!-GAME OVER-!-!-!-'] + boss['boss_victory_text'] + ["Let's run that back..."])
             if player_stats['position'] == 0:
                 turn = -1
@@ -788,8 +818,6 @@ def Fight(boss):
             fight_finished = True
         # Victory Sequence
         elif boss['health'] <= 0:
-
-            input(player_stats['name'])
 
             if not monologue_complete:
                 Dialogue(boss['boss_defeat_text'])
@@ -903,10 +931,11 @@ while True:
             except:
                 print("Oops! Seems like you entered something incorrectly. Let's try that again")
         case 1:
-            print(f"-=-=-=-{player_stats['name']}'s Stats-=-=-=-")
+            print(f"-=-=-=-Your Stats-=-=-=-")
             print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
             print(f'Pages: {player_stats['pages']}/{player_stats['pages']}')
+            print(f'Level: {player_stats['level']}')
             input('Type anything to go back. ')
         case 2:
             ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", True)
@@ -923,4 +952,5 @@ while True:
                     print_all_dialogue = False
                 else:
                     print_all_dialogue = True
+    
     
