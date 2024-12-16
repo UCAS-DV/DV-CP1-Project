@@ -3,7 +3,7 @@ import random
 # Debug Values. Do not apply to game.
 skip_intro = True
 debug_attacks = True
-print_all_dialogue = False
+print_all_dialogue = True
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -24,13 +24,13 @@ locations = [
 ]
 places_to_go = [
     # Just a White Void [0]
-    [1, 2, 3, 4, 8],
+    [1, 2, 3], #4, 8],
     # Spookyland [1]
-    [0, 4, 5, 6, 8],
+    [0], #4, 5, 6, 8],
     # Area 51 [2]
-    [0, 3, 8],
+    [0, 3],#, 8],
     # The Mythical State of North Dakota [3]
-    [0, 2, 4],
+    [0, 2],#, 4],
     # The North Pole [4]
     [0, 3, 5],
     # The Roman Empire [5]
@@ -580,25 +580,24 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
-def Fight(boss, player_inventory):
+def Fight(boss):
     turn = -1
     fight_finished = False
     player_action = {}
     rewards_recieved = False
-
-    boss['encountered'] = True
+    saved_inventory = []
     
     boss['max_health'] += 20 * player_stats['level']
     boss['health'] = boss['max_health']
-    
-    saved_inventory = player_inventory
 
     while not fight_finished:
 
         if boss['health'] > 0 and player_stats['health'] > 0:
             if turn == -1:
-                Dialogue(boss["intro"])
+                if not boss['encountered']:
+                    Dialogue(boss["intro"])
                 turn += 1
+                boss['encountered'] = True
             elif turn % 2 == 0:
                 input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
                 print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ ')
@@ -629,7 +628,8 @@ def Fight(boss, player_inventory):
                         if player_action < 0:
                             continue
 
-                        TakeAction(inventory[player_action], player_stats['nerves'], True, boss)
+                        saved_inventory.append(inventory[player_action])
+                        TakeAction(inventory[player_action], player_stats['nerves'], True, boss)               
                     case 2:        
                         player_action = ShowOptions(player_attacks, "Which attack do you wish to use (Enter Number)? ", False)
 
@@ -649,12 +649,10 @@ def Fight(boss, player_inventory):
                 # Following If Statements are to ensure the boss doesn't make any redundant moves
                 if boss_attack['health_effect'] > 0 and boss['health'] == boss['max_health']:
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-                    print(boss_attack['name'])
                     continue
 
                 if boss_attack['nerves_effect'] > 0 and boss['nerves'] == boss['max_nerves']:
                     boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-                    print(boss_attack['name'])
                     continue
             
                 if rerolls < 3:
@@ -672,9 +670,9 @@ def Fight(boss, player_inventory):
             if player_stats['position'] == 0:
                 turn = -1
                 continue
-            print('Here')
             player_stats['position'] = 0
-            player_inventory = saved_inventory
+            for saved_item in saved_inventory:
+                inventory.append(saved_item)            
             fight_finished = True
         # Victory Sequence
         elif boss['health'] <= 0:
@@ -740,6 +738,7 @@ def Fight(boss, player_inventory):
             fight_finished = True
 
 if not skip_intro:
+
     input(game_title_screen)
     Dialogue(["Once upon a time,", 
           "There was a great nation known as the Even More United States of America, or EMUSA.", 
@@ -762,14 +761,14 @@ if not skip_intro:
     Dialogue([f"Well then, it's a pleasure to meet you {name}.",
           "Now, let's save America!"])
 
-Fight(bosses[0], inventory)
+Fight(bosses[0])
 
 while True:
 
     if player_stats['position'] != 0:
         for boss in bosses:
             if boss["location"] == player_stats['position'] and boss["is_defeated"] == False:
-                Fight(boss, inventory)
+                Fight(boss)
                 break
         else:
             if player_stats['position'] not in places_been:
