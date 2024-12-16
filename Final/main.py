@@ -1,7 +1,7 @@
 import random
 
 # Debug Values. Do not apply to game.
-skip_intro = True
+skip_intro = False
 debug_attacks = True
 print_all_dialogue = True
 
@@ -9,7 +9,6 @@ game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
            Enter Anything to Start
                       '''
-name = 'You'
 
 locations = [
     "Just a White Void",
@@ -24,13 +23,13 @@ locations = [
 ]
 places_to_go = [
     # Just a White Void [0]
-    [1, 2, 3], #4, 8],
+    [1, 2, 3, 4, 8],
     # Spookyland [1]
-    [0], #4, 5, 6, 8],
+    [0, 4, 5, 6, 8],
     # Area 51 [2]
-    [0, 3],#, 8],
+    [0, 3, 8],
     # The Mythical State of North Dakota [3]
-    [0, 2],#, 4],
+    [0, 2, 4],
     # The North Pole [4]
     [0, 3, 5],
     # The Roman Empire [5]
@@ -65,71 +64,8 @@ location_dialogue = [
     "He forgot to explain to you what it does, assuming that you already know, so you don't really know what to do with it", "It's a nice gift so you're still happy."]
 ]
 
-items = [
-    {
-        "name": "High Hopes and Determination",
-        'description': "Well, this isn't quite what you signed up for but your main character syndrome stops you from letting your country fall.",
-        "health_effect": 10,
-        "nerves_effect": 40,
-        "to_player": True,
-        'use_text': ["While on the ropes, it all comes back to you in a flash.", 
-"You remember who you truly are.",
-"You are not someone to be defeated by mere fatal injuries.",
-"This journey has reminded you that, not only you have friends and a family to come back to, but everyone in this country you've been fighting for has people to come back to as well.",
-"You are suddenly filled with high hopes and determination."],
-        'is_item': True
-    },
-    {
-        'name': 'Skull of Mr. Skellybones',
-        'description': f'"Raaah. Thank you {name}. Let us save our country. For Spookyland!"',
-        'health_effect': -10,
-        'nerves_effect': -40,
-        'to_player': False,
-        'use_text': ['You pull out the skull of Mr. Skellybones.', '"RAAAAAAAAHHHHHHHH! I AM MR. SKELLYBONES AND I AM A MAN!"', 
-        '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
-        "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
-        'As they start muttering to themselves about the Ship of Theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
-        'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job {name}!'],
-        'is_item': True
-    },
-    {
-        "name": "Laser Blaster",
-        'description': 'A state of the art plasma pistol designed by the best of Vorlom and made in China!',
-        "health_effect": -50,
-        "nerves_effect": 0,
-        "to_player": False,
-        'use_text': ['"Pew Pew!"', 'A flurry of deep blue rays of plasma cover your opponent.', 
-        "As your opponent panics as to what to do, you try to fire several more shots but it seems its jammed", 'You look down at the display on the gun. It reads:',
-        '"You have reached the limit for free shots from this weapon. If you wish to fire more, join Laser Premium for $8.99 a week."', 'Gross...', 
-        'You shrug and chuck the blaster at your opponent.', 'It lands and they reel from the collision. They place an icepack on their head and the battle continues.'],
-        'is_item': True,
-    },
-    {
-        "name": "Slab of Northdakotium",
-        'description': "You're not quite sure what to do with it but it's a nice gift.",
-        "health_effect": 50,
-        "nerves_effect": 0,
-        "to_player": True,
-        'use_text': ['In despiration, you pull out your slab of Northdakotium.', "You then pause as you realize you don't really know what to do with it.", 
-        'You shrug and take a bite out of it for some reason?', 'Why was that the first thing that you thought to do?', 
-        'Anyway, after taking a bite out of a literal block of metal, you suddenly feel siginficantly healthier for some reason?', 'Huh.', 'That should not have worked but what works, works, I guess.'],
-        'is_item': True,
-    }
-]
-location_items = [
-    # Just a White Void [0] (No Item)
-    {},
-    # Spookyland [1] (No Item)
-    {},
-    # Area 51 [2]
-    items[2],
-    # North Dakote [3]
-    items[3]
-]
-
-inventory = []
-
 player_stats = {
+    'name': 'You',
     "health": 100,
     "nerves": 100,
     "strength": 0,
@@ -184,6 +120,79 @@ player_attacks = [
     },
 ]
 
+items = [
+    {
+        "name": "High Hopes and Determination",
+        'description': "Well, this isn't quite what you signed up for but your main character syndrome stops you from letting your country fall.",
+        "health_effect": 30,
+        "nerves_effect": 30,
+        "to_player": True,
+        'use_text': ["While on the ropes, it all comes back to you in a flash.", 
+"You remember who you truly are.",
+"You are not someone to be defeated by mere fatal injuries.",
+"This journey has reminded you that, not only you have friends and a family to come back to, but everyone in this country you've been fighting for has people to come back to as well.",
+"You are suddenly filled with high hopes and determination."],
+        'is_item': True
+    },
+    {
+        'name': 'Skull of Mr. Skellybones',
+        'description': f'"Raaah. Thank you {player_stats['name']}. Let us save our country. For Spookyland!"',
+        'health_effect': -10,
+        'nerves_effect': -40,
+        'to_player': False,
+        'use_text': ['You pull out the skull of Mr. Skellybones.', '"RAAAAAAAAHHHHHHHH! I AM MR. SKELLYBONES AND I AM A MAN!"', 
+        '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
+        "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
+        'As they start muttering to themselves about the Ship of Theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
+        'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job {player_stats['name']}!'],
+        'is_item': True
+    },
+    {
+        "name": "Laser Blaster",
+        'description': 'A state of the art plasma pistol designed by the best of Vorlom and made in China!',
+        "health_effect": -50,
+        "nerves_effect": 0,
+        "to_player": False,
+        'use_text': ['"Pew Pew!"', 'A flurry of deep blue rays of plasma cover your opponent.', 
+        "As your opponent panics as to what to do, you try to fire several more shots but it seems its jammed", 'You look down at the display on the gun. It reads:',
+        '"You have reached the limit for free shots from this weapon. If you wish to fire more, join Laser Premium for $8.99 a week."', 'Gross...', 
+        'You shrug and chuck the blaster at your opponent.', 'It lands and they reel from the collision. They place an icepack on their head and the battle continues.'],
+        'is_item': True,
+    },
+    {
+        "name": "Slab of Northdakotium",
+        'description': "You're not quite sure what to do with it but it's a nice gift.",
+        "health_effect": 50,
+        "nerves_effect": 0,
+        "to_player": True,
+        'use_text': ['In despiration, you pull out your slab of Northdakotium.', "You then pause as you realize you don't really know what to do with it.", 
+        'You shrug and take a bite out of it for some reason?', 'Why was that the first thing that you thought to do?', 
+        'Anyway, after taking a bite out of a literal block of metal, you suddenly feel siginficantly healthier for some reason?', 'Huh.', 'That should not have worked but what works, works, I guess.'],
+        'is_item': True,
+    },
+    {
+        "name": "Pretentious Monocle",
+        'description': "Does anyone still where these things?",
+        "health_effect": 0,
+        "nerves_effect": 60,
+        "to_player": True,
+        'use_text': [''],
+        'is_item': True,
+    }
+]
+location_items = [
+    # Just a White Void [0] (No Item)
+    {},
+    # Spookyland [1] (No Item)
+    {},
+    # Area 51 [2]
+    items[2],
+    # North Dakote [3]
+    items[3]
+]
+
+inventory = []
+
 if debug_attacks:
     player_attacks.append({
         "name": "Falcon Punch",
@@ -210,6 +219,33 @@ if debug_attacks:
         "is_item": False
     })
 
+reward_attacks = [
+    {
+        "name": "Pep Talk",
+        'description': 'No pain can beat out the power of a good pep talk!',
+        "health_effect": 10,
+        "nerves_effect": 0,
+        "to_player": True,
+        "super_success": ['You give such an incredible, rousing self pep talk that even your enemy feel a little inspired.'],
+        "success": ['You give yourself a pep talk and feel inspired by your own words.'],
+        "failure": ['You try to give yourself a pep talk but you suck at public speaking so it proves ineffective,', "even though the only person it's directed to is yourself."],
+        "super_failure": ['...', "That was...", 'something.', "Don't beat yourself up about it,", 'just ensure that you will never have to do any sort of public speaking...', 'ever...'
+        "and you'll be fine!"]
+    },
+    {
+        "name": "Funny Bone Blow",
+        "health_effect": -15,
+        "nerves_effect": 0,
+        "to_player": True,
+        "super_success": ["You look at your opponent with a deadpan expression", 'You walk up to your opponent, menacingly and your mere aura brings them to your knees.',
+        "You lightly taps their funny bone.", "He looks at you confused but suddenly... what feels like a jolt of lightening traverses through their arm and you can infer the rest"],
+        "success": ['You hits their funny bone in a very unfunny way'],
+        "failure": ['You try to hit their funny bone in a very unfunny way but you only lightly tap it'],
+        "super_failure": ["You try to hit your enemy's funny bone but you miss terribly.", 
+        'You fall to the ground from the missed swing and you contemplate why you were even bothering with this quest.',
+        'Your opponent pities you and encourages you to get back into the fight.', 'Eventually, the fight continues.']
+    },
+]
 boss_attacks = [
     # The Voice in Your Head
     [
@@ -228,10 +264,11 @@ boss_attacks = [
             "health_effect": 10,
             "nerves_effect": 0,
             "to_player": False,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
+            "super_success": ['I give myself such an incredible, rousing self pep talk that even you feel a little inspired.', 'Wow, I should really pursue public speaking!',
+            "You know, I think I might do so!", 'Yeah...', 'wait, the only person who can hear me is you.', '...', 'Ow.'],
+            "success": ['I give myself a pep talk and feel inspired by my own words.'],
+            "failure": ["You know...", 'I am so happy that the only person who can hear me is you.'],
+            "super_failure": ['Um...', "I thought I would be better at speaking given that it's the only thing I can do.", 'Just...', 'please forget everything I just said.']
         },
         {
             "name": "Unbearable Yell",
@@ -286,12 +323,12 @@ boss_attacks = [
             "health_effect": 20,
             "nerves_effect": 0,
             "to_player": False,
-            "super_success": ['He reaches behinda grave and grabs a jug of Kirkland milk.', '"Raaaah. Only Kirkland Milk makes feel this good."', 
-            '"You can find Kirkland Milk at your local Costco for only $4.29"', 'He tilts his skull in what you think is a wink and drinks the whole cartoon.', 
+            "super_success": ['He reaches behinda grave and grabs a jug of Clarkplace(TM) milk.', '"Raaaah. Only Clarkplace Milk(TM) makes feel this good."', 
+            '"You can find Clarkplace Milk(TM) at your local PriceCo(TM) for only $4.29"', 'He tilts his skull in what you think is a wink and drinks the whole cartoon.', 
             'He looks significantly more health y.'],
-            "success": ['He reaches behind a grave and grabs a jug of Great Value(TM) milk.', 'He drinks it and looks revitalized.'],
-            "failure": ['He reaches behind a grave and grabs a jug of expired Great Value(TM) milk.', "He drinks it and seems disgusted, you can't tell because he's just a skeleton."],
-            "super_failure": ['He reaches behind a grave and grabs an empty jug of Kirkland milk.', 'He looks at the jug with despair.', '"Raaaah. Why did you have to leave me too dear Kirkland Milk"',
+            "success": ['He reaches behind a grave and grabs a jug of Awesome Price(TM) milk.', 'He drinks it and looks revitalized.'],
+            "failure": ['He reaches behind a grave and grabs a jug of expired Awesome Price(TM) milk.', "He drinks it and seems disgusted, you can't tell because he's just a skeleton."],
+            "super_failure": ['He reaches behind a grave and grabs an empty jug of Clarkplace milk.', 'He looks at the jug with despair.', '"Raaaah. Why did you have to leave me too dear Kirkland Milk"',
             'You reconcile him as he despairs', '"Raaaah. Thank you"', "Now that he's feeling better, you hug and then continue the fight"]
         },
     ]
@@ -315,7 +352,8 @@ bosses = [
         "Don't worry if you get too nervous, you will likely have items you collect from bosses or location that you can use as hail marys, regardless of your nerves.", 
         "Although, you can only use them once so be conservative with your item use.",
         "Also, if things get too bad, there's a minimum value your nerves can fall under. Although sadly, your enemies also have a minimum nerves value.",
-        "Now that we have that settled, let's begin! I'll be your first boss so you can apply your new knowledge."],
+        "Now that we have that settled, let's begin! I'll be your first boss so you can apply your new knowledge.", 
+        'By the way, to traverse menus, you must enter the numbers of the options and if you enter a menu you wish to exit, type anything but the selected options.'],
 
         "boss_victory_text": ["Oh!", "How did you...", "I don't even exist!", "Wait, if you're gone, and I'm in your head, what does that mean for me?", "...", "Uh oh."],
 
@@ -323,7 +361,10 @@ bosses = [
                              "And don't worry, since I don't exist, I'm completely fine!", "I'll never leave...", 
                              "Anyways, now that you've defeated me, you will get my item and be given the opportunity to upgrade one of your stats.", 'You have 4 stats:',
                              'Strength, which increases the power of your offensive attacks,', 'Bravery, which increases your maximum and minimum amount of nerves,',
-                             'Durability, which increase your maximum health,', 'And Recovery, which increase the power of attacks that boost you.', "Usually you will get a page from defeated bosses but I don't have any pages to give-",
+                             'Durability, which increase your maximum health,', 'And Recovery, which increase the power of attacks that boost you.', 
+                             'Also, you will pick up attacks from your opponents and you can learn one of them if you want', "But you're brain isn't limitless, so you'll have to forget an attack to make up for it.",
+                             'Keep that in mind when deciding whehter or not you want to learn their attack.',
+                             "Anyway, usually you will get a page from defeated bosses but I don't have any pages to give-",
                              "You look down at your feet to see you're standing on a page of the constitution.", "Well that's convienient."],
 
         "is_defeated": False,
@@ -357,9 +398,39 @@ bosses = [
         '"Raaaah. You have no reason to fulfill any request from me, but I ask for my people, please do not let us fall into the shadows"', 'Well, that sucks for him, you walk away and-', 
         'What are you doing?', 'You nod and gently pat him on the head.', '"Raaaah. Thank you. If you are truly dedicated to saving Spookyland, wherever you go, take me with you and I will assist you as best as I can."', 
         "You ignore the skeleton who was attacking you just 5 minutes ago because that's the normal thing to-",
-        'Are you serious?', 'You pick up his skull and nod again.', '"Raaaah. Tell me, what is your name, honorable one"', 
-        f'You point to your name tag that reads "{name}: White House Unpaid Intern"', f'"Thank you {name}"'
+        'Are you serious?', 'You pick up his skull and nod again.', '"Raaaah. Tell me, what is your name, honorable one"',
         'Well, fine then, I guess he may be useful in battle.'],
+
+        "is_defeated": False,
+        'encountered': False
+    },
+    {
+        "name": "A Personification of Capitalism",
+        "health": 50,
+        "nerves": 50,
+        "max_health": 120,
+        "max_nerves": 120,
+        "min_nerves": 15,
+        "victory_item": items[2],
+        "location": 5,
+        'index': 2,
+
+        "intro": ['Welcome to Town City, your home town.', "Why isn't it great to be home!", 'Air: Polluted', "Tap Water: Don't Drink", 'Crime: Of Course', 'Labor Rights: Ignored', "Truly lovely isn't it?",
+        "Although, given how big this city is, if there's a page here, there's no way that we could find it anytime soon.", "Well then, let's go searching.", 
+        'You traverse all throughout the city, going down a pleasant trip on Memory Lane.', 'As you peacefully go around, you notice a black limousine go through the street.', 
+        'It quite literally stretches all of the way down to the horizon.', 'As you ponder who such a car would turn, you see well dressed gentleman exit right behind the front of the vehicle.', 
+        'In his hand, a piece of parchment.', 'He looks back at you and fear glistens in his eyes.', 'You have garnered quite a reputation after your previous victories.', '"Henchmen, get him!"', 
+        'They stand still and after you do a backflip to assert dominance, they scurry off.', '"Imbeciles! You! I will let you know that any attempt to take this page is futile."',
+        '"Get any closer and I will strike you down like I strike down unions!"', 'Ah...', 'I see...', "Seems like you're fighting..."],
+
+        "boss_victory_text": ['"You look just as hopeless as my employees after 15 hours of mandatory labor on Christmas. Hehehehe"', 'Hint: The Personification of Capitalism starts off extremely weak. Try to keep him from buffing himself'],
+
+        "boss_defeat_text": ['"What?!"', '"No!"', '"This can not be!"', '"How dare you!"', '"I worked so hard to be the first born son of my billonare father and this is what I get! Do you not know how hard it is to dock my workers pay?!"', 
+        '"I have to tell my intern to change the numbers and send out the emails!"', '"It is so tiring on my part!"', 'You shrug and grab the page out of his hand. You also take his monocle because why not?',
+        '"I get it, you want to destroy me because you are too lazy to work as hard as I did to be born to a rich family!"', 'He keeps rambling as you walk away. Eventually he leaves earshot',
+        'Well...', 'that was pretentious.', 'If I had eyes I would be rolling them.', "Receiving a lecture about the dangers of unfettered capitalism in a journey where you fight Santa Claus and Mr. Skellybones was odd to say the least.", 
+        "Well, hey, we got a page."],
+
         "is_defeated": False,
         'encountered': False
     }
@@ -373,8 +444,8 @@ def Dialogue(dialogue):
         for line in dialogue:
             print(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
         else:
-            print('Enter anything to continue')
-      
+            input('Enter anything to continue: ')
+
 def ShowOptions(choices, selection_prompt, display_only):
     input_taken = False
     player_choice = 0
@@ -584,7 +655,11 @@ def Fight(boss):
     turn = -1
     fight_finished = False
     player_action = {}
+
     rewards_recieved = False
+    stat_boosted = False
+    monologue_complete = False
+
     saved_inventory = []
     
     boss['max_health'] += 20 * player_stats['level']
@@ -599,7 +674,7 @@ def Fight(boss):
                 turn += 1
                 boss['encountered'] = True
             elif turn % 2 == 0:
-                input(f"-+-+-+-+-{name}'s Turn-+-+-+-+-")
+                input(f"-+-+-+-+-{player_stats['name']}'s Turn-+-+-+-+-")
                 print(f'-~-~-~-~-~{boss["name"]}-~-~-~-~-~ ')
                 try:
                     action = ShowOptions(['Check Stats', 'Select Item', 'Select Attack'], 'What is your choice? ', False)
@@ -612,7 +687,7 @@ def Fight(boss):
 
                 match action:
                     case 0:
-                        print(f"-=-=-=-{name}'s Stats-=-=-=-")
+                        print(f"-=-=-=-{player_stats['name']}'s Stats-=-=-=-")
                         print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
                         print(f"Minimum Nerves: {player_stats['min_nerves']} \nDurability: {player_stats['durability']} \nBravery: {player_stats["bravery"]} \nStrength: {player_stats["strength"]}")
                         print(f"-=-=-=-{boss['name']}'s Stats-=-=-=-")
@@ -666,6 +741,12 @@ def Fight(boss):
         elif player_stats['health'] <= 0:
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
+            if boss['name'] != "A Personification of Capitalism":
+                boss['health'] = boss['max_health']
+                boss['nerves'] = boss['max_nerves']
+            else:
+                boss['health'] = 50
+                boss['nerves'] = 50
             Dialogue(['-!-!-!-GAME OVER-!-!-!-'] + boss['boss_victory_text'] + ["Let's run that back..."])
             if player_stats['position'] == 0:
                 turn = -1
@@ -676,7 +757,12 @@ def Fight(boss):
             fight_finished = True
         # Victory Sequence
         elif boss['health'] <= 0:
-            Dialogue(boss['boss_defeat_text'])
+
+            input(player_stats['name'])
+
+            if not monologue_complete:
+                Dialogue(boss['boss_defeat_text'])
+                monologue_complete = True
 
             if rewards_recieved == False:
                 
@@ -690,48 +776,48 @@ def Fight(boss):
                 input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
                 rewards_recieved = True
 
-            # Have player choose what stat to level up
-            match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}', f'Recovery: {player_stats['recovery']}'], 'Which stat do you wish to level up? ', False):
-                case -1:
+            if not stat_boosted:
+                # Have player choose what stat to level up
+                match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}', f'Recovery: {player_stats['recovery']}'], 'Which stat do you wish to level up? ', False):
+                    case -1:
+                        continue
+                    case 0:
+                        player_stats['strength'] += 1
+                        player_stats['attack_potency'] += (player_stats["strength"]) * 0.1
+                        Dialogue([f'Your strength is now at Level {player_stats['strength']}!'])
+                    case 2:
+                        player_stats['durability'] += 1
+                        player_stats['max_health'] += (player_stats['durability']) * 15
+                        Dialogue([f'Your durability is now at Level {player_stats['durability']}!'])
+                    case 1:
+                        player_stats['bravery'] += 1
+                        player_stats['max_nerves'] += (player_stats["bravery"]) * 5
+                        player_stats['min_nerves'] += (player_stats['bravery']) * 5
+                        Dialogue([f'Your bravery is now at Level {player_stats['bravery']}!'])
+                    case 3:
+                        player_stats['recovery'] += 1
+                        player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.1
+                        Dialogue([f'Your recovery stat is now at Level {player_stats['recovery']}!'])
+                stat_boosted = True
+            
+            ShowOptions([reward_attacks[boss['index']]], 'Yippee', True)
+
+            if boss['name'] == "The Voice In Your Head":
+                Dialogue([f'You have learned Pep Talk. Congratualations!'])
+                player_attacks.append(reward_attacks[0])
+            else:
+                replace = ShowOptions(['Yes', 'No'], 'Would you like to replace any of your attacks with this one? ', False)
+                if replace == 0:                
+                    player_attacks[ShowOptions(player_attacks, 'Which attack would you like to replace ? ', False)] = reward_attacks[boss['index']]
+                    Dialogue([f'You have learned {reward_attacks[boss['index']]['name']}!'])
+                elif replace == 1:
+                    Dialogue([f'You have decided not to learn {reward_attacks[boss['index']]['name']}.'])
+                else:
                     continue
-                case 0:
-                    player_stats['strength'] += 1
-                    player_stats['attack_potency'] += (player_stats["strength"]) * 0.1
-                    Dialogue([f'Your strength is now at Level {player_stats['strength']}!'])
-                case 2:
-                    player_stats['durability'] += 1
-                    player_stats['max_health'] += (player_stats['durability']) * 15
-                    Dialogue([f'Your durability is now at Level {player_stats['durability']}!'])
-                case 1:
-                    player_stats['bravery'] += 1
-                    player_stats['max_nerves'] += (player_stats["bravery"]) * 5
-                    player_stats['min_nerves'] += (player_stats['bravery']) * 5
-                    Dialogue([f'Your durability is now at Level {player_stats['bravery']}!'])
-                case 3:
-                    player_stats['recovery'] += 1
-                    player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.1
-            
-            #attacks = []
-    
-            #for attack in boss_attacks[boss['index']]:
-            #    attacks.append(attack)
-
-            #attack_to_learn = boss_attacks[boss['index']][ShowOptions(attacks, 'Which attack would you like to learn? ', False)]
-            
-            #This is so the player has an empty space for attack selection
-            #if boss['name'] == "The Voice In Your Head":
-            #    player_attacks.append({'name': 'Empty Space', 'to_player': False})
-
-            #attack_to_replace_index = ShowOptions(player_attacks, 'Which attack would you like to replace? ', False)
-
-            #player_attacks[attack_to_replace_index] = attack_to_learn
-
-            #Dialogue([f'You have learned "{attack_to_learn['name']}"'])
-
-            # Reset Player health and nerves and mark boss as defeated
 
             player_stats['level'] += 1
-
+            
+            # Reset Player health and nerves and mark boss as defeated
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
             boss['is_defeated'] = True
@@ -752,14 +838,7 @@ if not skip_intro:
           '...',
           'Who am I?',
           "I'm the voice in your head of course! I'll be guiding you on this important quest.",
-          'But first, who are you?'])
-
-    name = input("Enter your name here: ")
-
-    name = input(f'Really? Are you sure "{name}" is your name? Write your name again just to be sure, or write a different name if the one you entered was wrong: ')
-
-    Dialogue([f"Well then, it's a pleasure to meet you {name}.",
-          "Now, let's save America!"])
+          "Now, let's save america!"])
 
 Fight(bosses[0])
 
@@ -767,8 +846,10 @@ while True:
 
     if player_stats['position'] != 0:
         for boss in bosses:
-            if boss["location"] == player_stats['position'] and boss["is_defeated"] == False:
+            if boss["location"] == player_stats['position'] and not boss["is_defeated"]:
                 Fight(boss)
+                break
+            elif boss["location"] == player_stats['position'] and boss["is_defeated"]:
                 break
         else:
             if player_stats['position'] not in places_been:
@@ -778,6 +859,8 @@ while True:
                 input('You have a new item! (1/1)')
                 ShowOptions([location_items[player_stats['position']]], 'Test', display_only=True)
                 input('Press anything to continue')
+
+    print(f'You are at {locations[player_stats['position']]}')
 
     match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks', 'Settings'], 'What would you like to do? ', False):
         case 0:
@@ -789,7 +872,7 @@ while True:
             except:
                 print("Oops! Seems like you entered something incorrectly. Let's try that again")
         case 1:
-            print(f"-=-=-=-{name}'s Stats-=-=-=-")
+            print(f"-=-=-=-{player_stats['name']}'s Stats-=-=-=-")
             print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
             print(f'Pages: {player_stats['pages']}/{player_stats['pages']}')
