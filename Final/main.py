@@ -229,18 +229,6 @@ items = [
         'is_item': True
     },
     {
-        "name": "GIGANTIC LONGSWORD",
-        'description': "How the heck was a snake able to hold this? It's taller than you!",
-        "health_effect": -65,
-        "nerves_effect": 0,
-        "to_player": False,
-        'use_text': ['You pull out a gigantic, 3 meter longsword from your back pocket.', 
-        'The fear that you were able to strike in your enemy purely by wielding it incites a heart attack in your enemy.',
-        'Somehow, they recover partially within just 15 minutes but damage has been done.', 'As you watch your opponent recover, you accidentally drop the sword and it breaks in two.',
-        'Oops.'],
-        'is_item': True
-    },
-    {
         'name': 'The Amazing Guide For Conflict by Super-Robo-Caeser',
         'description': "I'm getting the feeling that this isn't the real Julius Caeser...",
         'health_effect': 0,
@@ -284,18 +272,18 @@ location_items = [
     {},
     # Area 51
     items[2],
-    # North Dakote
+    # North Dakota
     items[3],
     # North Pole (No Item)
     {},
     # Roman Empire
-    items[7],
+    items[6],
     # Town City (No Item)
     {},
     # British Texas
-    items[6],
+    items[5],
     # American Australia
-    items[8]
+    items[7]
 ]
 
 inventory = []
@@ -464,7 +452,7 @@ boss_attacks = [
         },
         {
             "name": "Got Milk?",
-            "health_effect": 20,
+            "health_effect": 15,
             "nerves_effect": 0,
             "to_player": False,
             "super_success": ['He reaches behinda grave and grabs a jug of Clarkplace(TM) milk.', '"Raaaah. Only Clarkplace Milk(TM) makes feel this good."', 
@@ -672,7 +660,7 @@ bosses = [
         "location": 6,
         'index': 2,
 
-        "intro": ['Welcome to Town City, your home town.', "Why isn't it great to be home!", 'Air: Polluted', "Tap Water: Don't Drink", 'Crime: Of Course', 'Labor Rights: Ignored', "Truly lovely isn't it?",
+        "intro": ['Welcome to Town City, your home town.', "Why isn't it great to be home!", 'Air: Polluted', "Tap Water: Don't Drink", 'Crime: Of Course', 'Labor Laws: Ignored', "Truly lovely isn't it?",
         "Although, given how big this city is, if there's a page here, there's no way that we could find it anytime soon.", "Well then, let's go searching.", 
         'You traverse all throughout the city, going down a pleasant trip on Memory Lane.', 'As you peacefully go around, you notice a black limousine go through the street.', 
         'It quite literally stretches all of the way down to the horizon.', 'As you ponder who such a car would turn, you see well dressed gentleman exit right behind the front of the vehicle.', 
@@ -701,7 +689,7 @@ bosses = [
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 100,
-        "victory_item": items[9],
+        "victory_item": items[8],
         "location": 4,
         'index': 3,
 
@@ -1248,7 +1236,14 @@ while True:
             case 0:
                 Fight(bosses[4])
                 if bosses[4]['is_defeated']:
-                    Dialogue('End')
+                    Dialogue(['And so, your journey concluded.', 'After returning the constitution to your white house, a grand festival was hosted in your honor.', 'Everyone from all walks of life, from British Texas to the North Pole, attended in high spirits',
+                              'As the fireworks show begins, you sit upon a far off hilltop and watch.', 'The fireworks are mesmorizing and the amazed crowds bring a smile to your face.', '"Hey!"', 
+                              'You turn around, confused to see the elf that captured you earlier.', '"The fat man could not attend so I am here to represent him"', '"He says sorry. It was not in the spirit of Christmas to try to hold the country hostage."',
+                              '"Thank ya. It seems like after yer fight with him, he has been a lot kinder."', 'You nod and then remember the hat you took from him', 'You shrug and toss it to her', '"Oh! Ya do not have to do this"',
+                              '"The hat called to ya!"', 'You shrug.', '"Wow... thank ya..."', '"Raaaah. Honored one, is that you?"', "Suddenly, Mr. Skellybones interjects.", '"I have come to thank you, on behalf of the monsters of Spookyland"',
+                              '"We would not be thriving without your advocacy."', '"HELLO! I_THANK_YOU = TRUE. RATINGS = 10000!" says Super-Robo-Caeser.', '"Hello, dear intern, the Royal Family of North Dakota wishes to congratulate you on this incredible achievement." says a representative from North Dakota',
+                              'Hey, I thank you too.', "You've probably showed me some the greates excitement a voice in someone's head can ever have.", 'Thank you.'
+                              'And so, the fireworks shine brighter than ever,', 'and even better,', 'after the show you were bestowed the greatest honor an unpaid intern can get...', 'a wage of $8 an hour.', ])
                     break
                 else:
                     continue
