@@ -2,9 +2,9 @@ import random
 import math
 
 # Debug Values. Do not apply to game.
-skip_intro = True
-debug_attacks = True
-print_all_dialogue = True
+skip_intro = False
+debug_attacks = False
+print_all_dialogue = False
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -44,8 +44,11 @@ places_to_go = [
 ]
 places_been = []
 location_dialogue = [
+    # White Void
     ["Boss"],
+    # Spookyland
     ["Boss"],
+    # Area 51
     ['Due to some unfortunate events, the government was running low on cash so they opened Area 51 to the public for tourism.', 
     'Of course, you have to sign a massive waiver to get in because of the crazy stuff happening.', 
     'For example, just last week they were testing to see if radiation from nuclear fission could be used for cereal production and they used tourists to test the quality of the cereal.',
@@ -56,13 +59,44 @@ location_dialogue = [
     "You laugh hysterically. Seems like Zeep hasn't lost his wit!", '"Yam uup glep?"', "You show him a page of the constitution and he suddenly realizes what you're doing.", 
     '"Zeee, hep jam"', 'He hands you a laser pistol, although it seems that he accidentally left a proton charge on the trigger. Classic Zeep Vorp!', 'You remove the charge, bow in gratitude, and go on your way!', '"Verplum!"'
     ],
+    # North Dakota
     ['Out of boredom, you read through a page of the constitution you have and on it you notice that it mentions how the government should treat North Dakota.', 'Wait...', 
     'North Dakota?!', "There's no way...", 
     'Apparently the mythical state of North Dakota is not as mythical as commonly thought.', "Maybe the state is real but the sky cities and robot dogs and magic isn't real",
     "Well, there's no harm in checking for pages there.", "So, before you know it, you're dining with the king of North Dakota in a city 1000 meters up, levitated with magic.",
     'This is... odd, to say the least.', 'Anyways, you show the king your page and he explains he has not seen anything like it so after you finish eating you decide to go on your way',
     'He hands you a slab of "Northdakotium" and wishes you safe travels.', 
-    "He forgot to explain to you what it does, assuming that you already know, so you don't really know what to do with it", "It's a nice gift so you're still happy."]
+    "He forgot to explain to you what it does, assuming that you already know, so you don't really know what to do with it", "It's a nice gift so you're still happy."],
+    # North Pole
+    ['Boss'],
+    # Roman Empire
+    ['Somehow, someway, the Roman Empire was able to reform fully within the borders of EMUSA.', "Apparently, they were able to revive Julius Ceaser and now he's the governor.",
+    "Anyway, you're probably famous enough from your previous battles so that you can just talk to the governor.", 
+    'So after struggling to get an appointment (they kept putting you on hold), you are able to speak with Ceaser in his office.', 
+    'Oddly enough, when you walk in, you can hear cheering from what seems to be an audience', "So, I don't know how to put this but, Julius Ceaser is...", "Let's just say...", 
+    'A giant hulking mass of wires and machinery on wheels with a paper cut out of the face of Julius Caeser on the head of it...', 
+    'You try to ignore that and you hold up a page of the constitution and point to it.', 'Ceaser replies "BAJUNGA" and you can hear an uproarious laughter.', 
+    'You turn your head and realize this is all happening in front of a live studio audience.', "You're not quite sure how you didn't notice earlier", 
+    'Anyway, Ceaser tells you:', '"SEEN_PAGES = FALSE. PAGES MAY BE IN... GENERATING JOKE... CHAIR"', 
+    'You almost went deaf from the laughter. You shrug and decide to leave but before you leave Ceaser stops you',
+    'WAIT. I HAVE AN ITEM FOR YOU.', 'He pulls out a book from his robotic chest cavity. He hands it to you. The title reads "The Amazing Guide for Conflict by Super-Robo-Caeser."', 
+    'You bow in gratitude and leave.', 'Not really sure what that was supposed to do'],
+    # Town City
+    ['Boss'],
+    # British Texas
+    ["Oh, wow.", 'This place is beautiful.', 'Just you, me, and the vast outback.', "Isn't this the dream?", 
+    "Hey, after this, we should move here and make a small little wood cabin out here.", 'No country to save.', 
+    'No constition to restore.', 'No unpaid internship.', 'No living skeletons or off-tone metaphors.', 'What could go wrong?', 'Oh I know!', 
+    'A giagantic swarm of dangerous wildlife that go out to horizon could come at us.', "I'm talking about snakes with gigantic longswords and battle axes.", 
+    'Koalas on orbital death rays capable of erasing a continent off of the map.', 'Kangaroos, no further details.', 'Oh, oh!', 'What if there were also emus in WW2 era tanks?',
+    'That would be crazy!', "Like, I'm talking about a swarm like the swarm that's coming right toward us right now!", 'Wait.', '[One really amazing, spectacular fight later]',
+    'Well, that sucked.', "I'll give you credit, that super backflip you did to ward off the zombie dingos was art.", 'Oh, hey! One of the snakes left their longsword!'],
+    # American Australia
+    ['W-what are you doing?!', "You can't possibly be... no no no no no... be reasonable here!", "We can look for the pages else where I promise!", 
+    "PLEASE, I DON'T WANT TO GO TO AMERICAN AUSTRALIA (what you may know as Texas).", 'sigh...', 'You go do some stuff in American Australia or something or whatever.',
+    'Also, there was no pages so we just wasted our time!', 'Congratulations!', "We didn't even get an item or anything.", 
+    'Whenever we tried to talk to someone, they just yelled at us to get off their property.', 'We were on the other side of the street!', 
+    'You know what, you see that tumble weed over there.', 'Yeah, that one.', "Let's just grab that and call it this location's item."]
 ]
 
 player_stats = {
@@ -86,7 +120,7 @@ player_attacks = [
         "name": "Uncouth Declaration",
         "description": '''Forget physical damage! Emotional damage is where it's at!''',
         "health_effect": 0,
-        "nerves_effect": -15,
+        "nerves_effect": -20,
         'to_player': False,
         "super_success": ["Oh...", "wow...", "I get how intense this situation is but you didn't have to go that far.", "To be frank I don't even know if you can legally say that."],
         "success": ["Oh! He's absolutely devastated!"],
@@ -97,7 +131,7 @@ player_attacks = [
     {
         "name": "School-Appropriate Attack",
         "description": '''Deal damage to your opponent in a very school appropriate way with one simple trick!''',
-        "health_effect": -10,
+        "health_effect": -15,
         "nerves_effect": 0,
         'to_player': False,    
         "super_success": ['1'],
@@ -110,7 +144,7 @@ player_attacks = [
         "name": "Deep Breaths",
         "description": '''Breathe in... Breathe out... Feels better right?''',
         "health_effect": 0,
-        "nerves_effect": 15,
+        "nerves_effect": 25,
         'to_player': True,
         "super_success": ['1'],
         "success": ['2'],
@@ -141,8 +175,8 @@ items = [
         'nerves_effect': -40,
         'to_player': False,
         'use_text': ['You pull out the skull of Mr. Skellybones.', '"RAAAAAAAAHHHHHHHH! I AM MR. SKELLYBONES AND I AM A MAN!"', 
-        '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"'
-        "You're opponent sits down in complete terror as they contemplate the implications of that fact.", 
+        '"I HAVE COME TO TELL YOU THAT ALL OF YOUR CELLS ARE REPLACED EVERY 7-10 YEARS!"',
+        "Your opponent sits down in complete terror as they contemplate the implications of that fact.", 
         'As they start muttering to themselves about the Ship of Theseus, Mr. Skellybones tells you, "I am sorry, that is all I can muster without any milk to fuel me."', 
         'Well, given how shaken your opponent is, maybe you did make the right call bringing him along.', f'Great job!'],
         'is_item': True
@@ -167,29 +201,85 @@ items = [
         "to_player": True,
         'use_text': ['In despiration, you pull out your slab of Northdakotium.', "You then pause as you realize you don't really know what to do with it.", 
         'You shrug and take a bite out of it for some reason?', 'Why was that the first thing that you thought to do?', 
-        'Anyway, after taking a bite out of a literal block of metal, you suddenly feel siginficantly healthier for some reason?', 'Huh.', 'That should not have worked but what works, works, I guess.'],
+        'Anyway, after taking a bite out of a literal block of metal, you suddenly feel siginficantly healthier for some reason?', 'Huh.', 
+        'That should not have worked but what works, works, I guess.'],
         'is_item': True,
     },
     {
-        "name": "Pretentious Monocle",
-        'description': "Does anyone still where these things?",
+        "name": "Boat",
+        'description': "Yay! We can now go to British Texas!",
         "health_effect": 0,
-        "nerves_effect": 60,
+        "nerves_effect": 0,
         "to_player": True,
-        'use_text': ["Since you already have 20/20 vision, you figure that if you where your monocle, you'll have 40/20 vision", "That averages out to 1.5x better vision!", 'So you put on the monocle but instead of bettering your vision, you make it blurry.',
-                     'You then take a look at a reflection and you see that you look silly.', 'You feel more relaxed because of your amusement.', 'Although tragically, you drop and shatter the monocle.', 'Nonetheless, you feel better now.'],
+        'use_text': ['You decide to sail the 7 seas to British Texas!'],
         'is_item': True,
+    },
+    {
+        "name": "GIGANTIC LONGSWORD",
+        'description': "How the heck was a snake able to hold this? It's taller than you!",
+        "health_effect": -65,
+        "nerves_effect": 0,
+        "to_player": False,
+        'use_text': ['You pull out a gigantic, 3 meter longsword from your back pocket.', 
+        'The fear that you were able to strike in your enemy purely by wielding it incites a heart attack in your enemy.',
+        'Somehow, they recover partially within just 15 minutes but damage has been done.', 'As you watch your opponent recover, you accidentally drop the sword and it breaks in two.',
+        'Oops.'],
+        'is_item': True
+    },
+    {
+        "name": "GIGANTIC LONGSWORD",
+        'description': "How the heck was a snake able to hold this? It's taller than you!",
+        "health_effect": -65,
+        "nerves_effect": 0,
+        "to_player": False,
+        'use_text': ['You pull out a gigantic, 3 meter longsword from your back pocket.', 
+        'The fear that you were able to strike in your enemy purely by wielding it incites a heart attack in your enemy.',
+        'Somehow, they recover partially within just 15 minutes but damage has been done.', 'As you watch your opponent recover, you accidentally drop the sword and it breaks in two.',
+        'Oops.'],
+        'is_item': True
+    },
+    {
+        'name': 'The Amazing Guide For Conflict by Super-Robo-Caeser',
+        'description': "I'm getting the feeling that this isn't the real Julius Caeser...",
+        'health_effect': 0,
+        'nerves_effect': 60,
+        'to_player': True,
+        'use_text': ["You decide to quickly read Super-Robo-Caeser's book.", 
+        "You were the fastest reader back in high school so you were easily able to blow through the 700 page book in about 5 minutes", 
+        "You didn't understand any of it (I never said you understood any of the books you read in high school) but you feel more confident in your abilities."],
+        'is_item': True
+    },
+    {
+        'name': 'A Single Tumbleweed',
+        'description': "This is why I don't go to American Australia. Well I don't really go anywhere since I don't exist. But if I could, I would go to somewhere cool instead!",
+        'health_effect': -10,
+        'nerves_effect': -10,
+        'to_player': False,
+        'use_text': ["You decide that you might as well use your Tumbleweed since it's been cluttering your inventory", 
+        'You pull it out of your back pocket and gently roll it towards your opponent.', "They're mildly annoyed at the tumbleweed and the tiny thorns bother them.",
+        'Congrats?'],
+        'is_item': True
     }
 ]
 location_items = [
-    # Just a White Void [0] (No Item)
+    # Just a White Void (No Item)
     {},
-    # Spookyland [1] (No Item)
+    # Spookyland (No Item)
     {},
-    # Area 51 [2]
+    # Area 51
     items[2],
-    # North Dakote [3]
-    items[3]
+    # North Dakote
+    items[3],
+    # North Pole (No Item)
+    {},
+    # Roman Empire
+    items[7],
+    # Town City (No Item)
+    {},
+    # British Texas
+    items[6],
+    # American Australia
+    items[8]
 ]
 
 inventory = []
@@ -224,7 +314,7 @@ reward_attacks = [
     {
         "name": "Pep Talk",
         'description': 'No pain can beat out the power of a good pep talk!',
-        "health_effect": 10,
+        "health_effect": 15,
         "nerves_effect": 0,
         "to_player": True,
         "super_success": ['You give such an incredible, rousing self pep talk that even your enemy feel a little inspired.'],
@@ -236,12 +326,12 @@ reward_attacks = [
     },
     {
         "name": "Funny Bone Blow",
-        "health_effect": -15,
+        "health_effect": -20,
         "nerves_effect": 0,
-        "to_player": True,
+        "to_player": False,
         "super_success": ["You look at your opponent with a deadpan expression", 'You walk up to your opponent, menacingly and your mere aura brings them to your knees.',
         "You lightly taps their funny bone.", "He looks at you confused but suddenly... what feels like a jolt of lightening traverses through their arm and you can infer the rest"],
-        "success": ['You hits their funny bone in a very unfunny way'],
+        "success": ['You hit their funny bone in a very unfunny way'],
         "failure": ['You try to hit their funny bone in a very unfunny way but you only lightly tap it'],
         "super_failure": ["You try to hit your enemy's funny bone but you miss terribly.", 
         'You fall to the ground from the missed swing and you contemplate why you were even bothering with this quest.',
@@ -250,7 +340,7 @@ reward_attacks = [
     },
     {
         "name": "Investment",
-        "health_effect": 15,
+        "health_effect": 30,
         "nerves_effect": -15,
         "to_player": True,
         "super_success": ['Despite having absolutely 0 experience in stock trading, you discovered this trick called "Fraud" and you were able to make a ton of money,', 
@@ -260,7 +350,7 @@ reward_attacks = [
                     'By the most incredible stroke of luck the world has ever seen, you were able to profit, but not by much.'],
         "super_failure": ['You invested in crypto currency.'],
         'is_item': False
-    }
+    },
 ]
 boss_attacks = [
     # The Voice in Your Head
@@ -311,7 +401,7 @@ boss_attacks = [
     [
         {
             "name": "Funny Bone Blow",
-            "health_effect": -15,
+            "health_effect": -20,
             "nerves_effect": 0,
             "to_player": True,
             "super_success": ["With what you think is a deadpan expression", "(you can't really tell because he's just a faceless skeleton)", 
@@ -364,18 +454,30 @@ boss_attacks = [
         },
         {
             "name": "Bribery",
-            "health_effect": -15,
+            "health_effect": -20,
             "nerves_effect": 0,
             "to_player": True,
             "super_success": ['He pulls out his phone from his pocket and calls someone:', "Hello General Monger, would you kindly take care of the gentleman I am currently engaged in combat with? I will reward you greatly if you do so.",
                               "About 5 minutes later the enterity of main street is nothing but rubble and ash.", "Fortunately, the general completely failed at attacking you, so you're unscaved...", 'Until you trip and scrape your knee.'],
-            "success": ['He pulls out his phone from his pocket and calls someone:', '"Hello Mayor Michells, if you would be so kind as to suplex this gentleman in front of me, I will reward you greatly"', 
-                        'He hangs up and suddenly, you feel someone grab you and suplex you. As you recuperate you see the Metaphor hand the Mayor a briefcase. The Mayor leaves gleefully'],
+            "success": ['He pulls out his phone from his pocket and calls someone:', '"Hello Mayor Michells, if you would be so kind as to suplex this gentleman in front of me, I will reward you greatly."', 
+                        'He hangs up and suddenly, you feel someone grab you and suplex you. As you recuperate, you see the Metaphor hand the Mayor a briefcase. The Mayor leaves gleefully.'],
             "failure": ["He tries to call someone on his phone but it seems that he has no service, so he just throws a briefcase filled with $100 bills."],
             "super_failure": ['He tries to call someone on his phone but before he can make the call, a bunch of IRS employees tackle him.', 'Shockingly, the multibillionare has violated several tax codes.', 
                               'Somehow, he is able to fend off all 23.6 of them on his lonesome using nothing but shear will.', "I'm just kidding, he just threatened to dock their pay because he's friend with Commisioner of Internal Revenue.",
                               "After they leave, he tries to call someone on his phone but apparently he has no service."]
         },
+        {
+            "name": "Investment",
+            "health_effect": 35,
+            "nerves_effect": 15,
+            "to_player": False,
+            "super_success": ['"You know what?"', '"I will just commit fraud"', '"I will not stand for market instability"', "He shurgs and does a bunch of stuff you don't understand."],
+            'success': ['Midbattle, he sells his stocks in a major company, gaining millions of dollars to afford healthcare.', 
+            'He is significantly more healthy.'],
+            "failure": ['Midbattle, he tries to sell his stocks in a major company but sadly the companies stock price was falling, so he only got half as much money as he wanted.'],
+            "super_failure": ['He decided to invest in crypto currency.'],
+            'is_item': False
+        }
     ]
 ]
 bosses = [
@@ -415,7 +517,8 @@ bosses = [
                              "You look down at your feet to see you're standing on a page of the constitution.", "Well that's convienient."],
 
         "is_defeated": False,
-        'encountered': False
+        'encountered': False,
+        'level_last_encountered': 0
     },
     {
         "name": "Mr. Skellybones",
@@ -447,21 +550,21 @@ bosses = [
         '"Raaaah. You have no reason to fulfill any request from me, but I ask for my people, please do not let us fall into the shadows"', 'Well, that sucks for him, you walk away and-', 
         'What are you doing?', 'You nod and gently pat him on the head.', '"Raaaah. Thank you. If you are truly dedicated to saving Spookyland, wherever you go, take me with you and I will assist you as best as I can."', 
         "You ignore the skeleton who was attacking you just 5 minutes ago because that's the normal thing to-",
-        'Are you serious?', 'You pick up his skull and nod again.', '"Raaaah. Tell me, what is your name, honorable one"',
-        'Well, fine then, I guess he may be useful in battle.'],
+        'Are you serious?', 'You pick up his skull and nod again.', 'Well, fine then, I guess he may be useful in battle.'],
 
         "is_defeated": False,
-        'encountered': False
+        'encountered': False,
+        'level_last_encountered': 0
     },
     {
-        "name": "A Metaphor for Capitalism",
-        "health": 50,
-        "nerves": 50,
+        "name": "A Very Deep and Subtle Metaphor for Capitalism that Only Intellectuals",
+        "health": 60,
+        "nerves": 80,
         "max_health": 120,
         "max_nerves": 120,
         "min_nerves": 15,
         'def_health': 50,
-        'def_nerves': 50,
+        'def_nerves': 80,
         "victory_item": items[4],
         "location": 6,
         'index': 2,
@@ -472,18 +575,19 @@ bosses = [
         'It quite literally stretches all of the way down to the horizon.', 'As you ponder who such a car would turn, you see well dressed gentleman exit right behind the front of the vehicle.', 
         'In his hand, a piece of parchment.', 'He looks back at you and fear glistens in his eyes.', 'You have garnered quite a reputation after your previous victories.', '"Henchmen, get him!"', 
         'They stand still and after you do a backflip to assert dominance, they scurry off.', '"Imbeciles! You! I will let you know that any attempt to take this page is futile."',
-        '"Get any closer and I will strike you down like I strike down unions!"', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'PRETENCIOUS SOCIAL COMMENTARY!'],
+        '"Get any closer and I will strike you down like I strike down unions!"', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'PRETENTIOUS SOCIAL COMMENTARY!'],
 
         "boss_victory_text": ['"You look just as hopeless as my employees after 15 hours of mandatory labor on Christmas. Hehehehe"', 'Hint: The Personification of Capitalism starts off extremely weak. Try to keep him from buffing himself'],
 
         "boss_defeat_text": ['"What?!"', '"No!"', '"This can not be!"', '"How dare you!"', '"I worked so hard to be the first born son of my billonare father and this is what I get! Do you not know how hard it is to dock my workers pay?!"', 
         '"I have to tell my intern to change the numbers and send out the emails!"', '"It is so tiring on my part!"', 'You shrug and grab the page out of his hand. You also take his monocle because why not?',
         '"I get it, you want to destroy me because you are too lazy to work as hard as I did to be born to a rich family!"', 'He keeps rambling as you walk away. Eventually he leaves earshot',
-        'Well...', 'that was pretentious.', 'If I had eyes I would be rolling them.', "Receiving a lecture about the dangers of unfettered capitalism in a journey where you fight Santa Claus and Mr. Skellybones was odd to say the least.", 
+        'Well...', 'that was pretentious.', 'If I had eyes I would be rolling them.', "Receiving a lecture about the dangers of unfettered capitalism in a journey where you fight Santa Claus and Mr. Skellybones was not what I expected.", 
         "Well, hey, we got a page."],
 
         "is_defeated": False,
-        'encountered': False
+        'encountered': False,
+        'level_last_encountered': 0
     }
 ]
 
@@ -568,7 +672,7 @@ def Move(current_local, desired_local):
     # On the chance the player is in Town City or American Australia, the game will verify whether or not they have a boat to determine if they succesfully move.
     if current_local in [6, 8]:
         if desired_local == 7:
-            if "Boat" in inventory:
+            if items[4] in inventory:
                 print(f"Yar Har Har! You sailed the 7 seas! \nYou successfully moved to {locations[desired_local]}")
                 return desired_local
             else:
@@ -587,10 +691,10 @@ def RollNerveEffect(nerves):
     rolled_number = random.randint(1,100)
 
     if rolled_number > nerves:
-        if rolled_number > (nerves * 1.75):
+        if rolled_number > (nerves * 1.5):
             return 0
         else:
-            return 0.5
+            return 0.25
     else:
         if rolled_number < (nerves * 0.1):
             return 1.5
@@ -615,7 +719,7 @@ def TakeAction(action, nerves_value, from_player, boss):
             case 0:
                 effectiveness = ['Action was a complete failure.']
                 Dialogue(user_text + action['super_failure'] + effectiveness)
-            case 0.5:
+            case 0.25:
                 effectiveness = ['Action was a ineffective.']
                 Dialogue(user_text + action['failure'] + effectiveness)         
             case 1:
@@ -641,9 +745,16 @@ def TakeAction(action, nerves_value, from_player, boss):
 
             player_stats['health'] += health_effect
             player_stats['nerves'] += nerves_effect
-        
-            print(f'You healed {health_effect} health.')
-            print(f'You gained {nerves_effect} nerves.')
+
+            if action['health_effect'] < 0:
+                print(f'You lost {health_effect} health.')
+            else:
+                print(f'You healed {health_effect} health.')
+
+            if action['nerves_effect'] < 0:    
+                print(f'You lost {nerves_effect} nerves.')
+            else:
+                print(f'You gained {nerves_effect} nerves.')
         else:
 
             health_effect = math.floor(action['health_effect'] * nerve_multipler * player_stats['attack_potency'])
@@ -652,8 +763,15 @@ def TakeAction(action, nerves_value, from_player, boss):
             boss['health'] += health_effect
             boss['nerves'] += nerves_effect
 
-            print(f'You dealt {health_effect * -1} damage.')
-            print(f'{boss['name']} lost {nerves_effect * -1} nerves.')  
+            if action['health_effect'] < 0:
+                print(f'You dealt {health_effect * -1} damage.')
+            else:
+                print(f'Your opponent healed {health_effect} health from your attack.')
+
+            if action['nerves_effect'] < 0:
+                print(f'{boss['name']} lost {nerves_effect * -1} nerves.')  
+            else:
+                print(f'Your opponent gained {nerves_effect} nerves from your attack.')
 
     elif from_player and action['is_item']:
 
@@ -666,31 +784,61 @@ def TakeAction(action, nerves_value, from_player, boss):
             player_stats['health'] += health_effect
             player_stats['nerves'] += nerves_effect
         
-            print(f'You healed {health_effect} health.')
-            print(f'You gained {nerves_effect} nerves.')
+            if action['health_effect'] < 0:
+                print(f'You lost {health_effect} health.')
+            else:
+                print(f'You healed {health_effect} health.')
+
+            if action['nerves_effect'] < 0:    
+                print(f'You lost {nerves_effect} nerves.')
+            else:
+                print(f'You gained {nerves_effect} nerves.')
         else:
             boss['health'] += health_effect
             boss['nerves'] += nerves_effect
 
-            print(f'You dealt {health_effect * -1} damage.')
-            print(f'{boss['name']} lost {nerves_effect * -1} nerves.')  
+            if action['health_effect'] < 0:
+                print(f'You dealt {health_effect * -1} damage.')
+            else:
+                print(f'Your opponent healed {health_effect} health from your attack.')
+
+            if action['nerves_effect'] < 0:
+                print(f'{boss['name']} lost {nerves_effect * -1} nerves.')  
+            else:
+                print(f'Your opponent gained {nerves_effect} nerves from your attack.')
+
         inventory.pop(inventory.index(action))
     # If the action was not from a player, it will be handled as an item and use the boss's pool of attacks
     else:
-        health_effect = math.floor(action['health_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
-        nerves_effect = math.floor(action['nerves_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
+        health_effect = math.floor(action['health_effect'] * (nerve_multipler + (0.15 * player_stats['level'])))
+        nerves_effect = math.floor(action['nerves_effect'] * (nerve_multipler + (0.15 * player_stats['level'])))
 
         if action['to_player']:
             player_stats['health'] += health_effect
             player_stats['nerves'] += nerves_effect
 
-            print(f'{boss['name']} dealt {health_effect * -1} damage to you.')
-            print(f'You lost {nerves_effect * -1} nerves.')     
+            if action['health_effect'] < 0:
+                print(f'{boss['name']} dealt {health_effect * -1} damage to you.')
+            else:
+                print(f'You gained {health_effect} health from {boss['name']}.')
+
+            if action['nerves_effect'] < 0:
+                print(f'You lost {nerves_effect * -1} nerves.')
+            else:
+                print(f'You gained {nerves_effect} nerves.')
         else:
             boss['health'] += health_effect
             boss['nerves'] += nerves_effect
-            print(f'{boss['name']} healed {health_effect} health.')
-            print(f'{boss['name']} gained {nerves_effect} nerves.')
+
+            if action['health_effect'] > 0:
+                print(f'{boss['name']} healed {health_effect} health.')
+            else:
+                print(f'{boss['name']} lost {health_effect * -1} health.')
+
+            if action['nerves_effect'] > 0:
+                print(f'{boss['name']} gained {nerves_effect} nerves.')
+            else:
+                print(f'{boss['name']} lost {nerves_effect} nerves.')
 
     if player_stats['health'] > player_stats['max_health']: player_stats['health'] = player_stats['max_health'] 
 
@@ -713,10 +861,16 @@ def Fight(boss):
 
     saved_inventory = []
     
-    boss['health'] = boss['def_health']
+    # This resets the boss's health after a game over and makes sure that the boss's health is properly scaled with player level
+    boss['health'] = boss['def_health'] + (20 * player_stats['level'])
     boss['nerves'] = boss['def_nerves']
-    boss['max_health'] += 20 * player_stats['level']
-    boss['health'] = boss['max_health']
+    # This ensures that the boss's max health doesn't infinitely stack
+    if not boss['encountered'] or boss['level_last_encountered'] != player_stats['level']:
+        boss['max_health'] += 20 * player_stats['level']
+        boss['level_last_encountered'] = player_stats['level']
+    # This ensures that the Metaphor for Capitalism doesn't start at max health
+    if boss['index'] != 2:
+        boss['health'] = boss['max_health']
 
     while not fight_finished:
 
@@ -756,6 +910,9 @@ def Fight(boss):
                         if player_action < 0:
                             continue
 
+                        if inventory[player_action]['name'] == 'Boat':
+                            Dialogue('Um... what were you thinking their?', "It's a boat.", 'What possible use could a boat have in combat.')
+                            continue
                         saved_inventory.append(inventory[player_action])
                         TakeAction(inventory[player_action], player_stats['nerves'], True, boss)               
                     case 2:        
@@ -789,11 +946,11 @@ def Fight(boss):
                         continue
 
                     if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
-                        print('Rerolled!')
+                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                         rerolls += 1
                         continue
                     if player_stats['nerves'] <= player_stats['max_nerves'] / 2 and boss_attack['health_effect'] >= 0:
-                        print('Rerolled 2!')
+                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                         rerolls += 1
                         continue
 
