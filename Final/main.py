@@ -134,10 +134,11 @@ player_attacks = [
         "health_effect": -15,
         "nerves_effect": 0,
         'to_player': False,    
-        "super_success": ['1'],
-        "success": ['2'],
-        "failure": ['3'],
-        "super_failure": ['4'],
+        "super_success": ['Oh my!', 'That attack was not only devasting, but incredibly appropriate and conducive to a learning enviornment!', "Incredible!"],
+        "success": ['Whoa!', 'Bet they never saw that School-Appropriate Attack coming!'],
+        "failure": ['I mean,', 'it was an attack alright, but it was not very conducive to a learning environment so you basically failed.', 
+        "Also the fact you almost completely missed is why you failed but that's irrelevant"],
+        "super_failure": ['Whoa! Whoa! Whoa!', 'Not only did you miss that attack horrendously,', 'That attack does not represent a growth mindset!', 'Shame!'],
         "is_item": False
     },
     {
@@ -146,10 +147,11 @@ player_attacks = [
         "health_effect": 0,
         "nerves_effect": 25,
         'to_player': True,
-        "super_success": ['1'],
-        "success": ['2'],
-        "failure": ['3'],
-        "super_failure": ['4'],
+        "super_success": ['You not only decided to do deep breaths.', 'You went further and did box breathing', 
+        'In the distance you can hear every school councillor and therapist rejoice.'],
+        "success": ['You decide to take some deep breaths to help your nerves.'],
+        "failure": ["Huh,", "Apparently it's hard to find time to do some deep breathing in the midst of battle. You still somehow found a little time so it's alright."],
+        "super_failure": ["Yeah,", "so it's a little hard to practice proper breathing tactics in the middle of battle so you weren't able to do any deep breathing at all."],
         "is_item": False
     },
 ]
@@ -184,7 +186,7 @@ items = [
     {
         "name": "Laser Blaster",
         'description': 'A state of the art plasma pistol designed by the best of Vorlom and made in China!',
-        "health_effect": -50,
+        "health_effect": -35,
         "nerves_effect": 0,
         "to_player": False,
         'use_text': ['"Pew Pew!"', 'A flurry of deep blue rays of plasma cover your opponent.', 
@@ -259,6 +261,20 @@ items = [
         'You pull it out of your back pocket and gently roll it towards your opponent.', "They're mildly annoyed at the tumbleweed and the tiny thorns bother them.",
         'Congrats?'],
         'is_item': True
+    },
+    {
+        'name': "Santa's Hat",
+        'description': "Legend says that whoever holds his hat, holds his armies of elves. I'm not sure if elves will be good fighters but it's worth a shot!",
+        'health_effect': -50,
+        'nerves_effect': -25,
+        'to_player': False,
+        'use_text': ["In a last ditch effort, you pull out Santa's hat, and wear it.", 'You intially feel nothing but shaking.', 'You seem to be more nervous than you think...',
+        'or...', "there's something else at play.", "Suddenly, Santa's hat glows brightly and your opponent is shutters at the overwhelming amount of Christmas Spirit displayed.",
+        "You don't feel shooken by the Christmas Spirit at all but you are shooken by what feels like a whole battalion charging to your position.", "It's the elves?!",
+        'A familiar voice calls to you, "Hey! We got ya covered!"', 
+        "The elves pester your opponent and although they have the power of an athletic 6 year old, your opponent is no match for their sheer numbers.", 
+        'Eventually, your hat seems to run out of Christmas Spirit and the elves shrug and leave.', '"We hope to see ya later!"', "I honestly didn't think that would work."],
+        'is_item': True, 
     }
 ]
 location_items = [
@@ -326,6 +342,7 @@ reward_attacks = [
     },
     {
         "name": "Funny Bone Blow",
+        'description': "HEY! This is no laughing matter!",
         "health_effect": -20,
         "nerves_effect": 0,
         "to_player": False,
@@ -340,6 +357,7 @@ reward_attacks = [
     },
     {
         "name": "Investment",
+        'description': "You watched one guide on stock trading and now you believe you're an expert.",
         "health_effect": 30,
         "nerves_effect": -15,
         "to_player": True,
@@ -351,6 +369,24 @@ reward_attacks = [
         "super_failure": ['You invested in crypto currency.'],
         'is_item': False
     },
+    {
+        "name": "Intimidating Christmas MegaBlast",
+        'description': "You're no where near cool enough to actually preform a Christmas MegaBlast but you can start one up to scare your opponents",
+        "health_effect": 0,
+        "nerves_effect": -25,
+        "to_player": False,
+        "super_success": ['You begin to charge up a Christmas MegaBlast.', 'The charged blast is significantly more powerful than you projected.', "You can likely see it from space.",
+        "You don't know how this happened.", 'All you know is that your optometrist will likely be livid.', 'You then shrug and cancel the blast.'],
+        'success': ['You begin to charge up a Christmas MegaBlast of your own.', "You're enemies quiver in fear as you charge the blast, but then you shrug and cancel it."],
+        "failure": ["You begin to charge up a Christmas MegaBlast and they panic for a little bit, until they realize that you've been charging it for more than 5 minutes now.", 
+        'So they shrug, walk up, and knock your hat off your head.'],
+        "super_failure": ['You charge up your Christmas MegaBlast but then,', 
+        "you remember that one, really funny video you watched like 3 months ago and the restraint you're exercising to not laugh breaks your blast.",
+        "You figure that you might as well show your opponent the video since it's stuck in your head so you have to watch it anyway.", 'Your opponent basically dies laughing at the video.',
+        'Your opponent then tells you about how that video reminded them of their former passions.', 'The two of you have a jolly time as your opponent reveals more about themselves.',
+        'Eventually, the two of you exchange phone numbers and the fight continues.', "Sadly, since you did not bring your opponent's nerves down, I must say that..."],
+        'is_item': False
+    }
 ]
 boss_attacks = [
     # The Voice in Your Head
@@ -360,10 +396,11 @@ boss_attacks = [
             "health_effect": 0,
             "nerves_effect": -10,
             "to_player": True,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
+            "super_success": ["To be frank, given how absolutely dysfunctional the country was,", "with the Roman Empire, and Santa Claus, and them causing trouble",
+            "I don't even think it's worth it."],
+            "success": ["I'm going to be honest, I don't think we, an unpaid intern and a voice in that intern's head can save America like Mr. President wants us to."],
+            "failure": ['I believe that you will make a mistake at some point in time!', 'Take that!'],
+            "super_failure": ['I have so many negative things to say but they bum me out too so I will just take the L on this turn and not say it.']
         },
         {
             "name": "Pep Talk",
@@ -381,20 +418,21 @@ boss_attacks = [
             "health_effect": -10,
             "nerves_effect": -5,
             "to_player": True,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
+            "super_success": ['NO, YOU DID NOT WIN THAT ONLINE ARGUMENT LAST NIGHT!', 'YOU WERE JUST FLAT OUT WRONG!'],
+            "success": ["THE ORIGINAL MOVIE WASN'T THAT GOOD!", "YOU ARE JUST LOOKING AT IT WITH ROSE-TINTED GLASSES!"],
+            "failure": ['aaaaaaa?'],
+            "super_failure": ['Um...', 'uh...', "I don't have anywhere near enough energy to yell."]
         },
         {
             "name": "Positive Affirmations",
             "health_effect": 0,
             "nerves_effect": 10,
             "to_player": False,
-            "super_success": ['1'],
-            "success": ['2'],
-            "failure": ['3'],
-            "super_failure": ['4']
+            "super_success": ['I mutter the most incredibly positive affirmations you have ever heard.', 'Even you feel a little inspired by my affirmations!'],
+            "success": ['I mutter a bunch of positive affirmations to myself to make myself feel better.'],
+            "failure": ['I mutter a bunch of positive affirmations but I felt almost nothing.'],
+            "super_failure": ['I am going to lose this fight.', "Wait.", "That isn't very positive.", 'I am going to lose this fight,', 'yet.', 
+            'See! I have practice a growth mindset!']
         }
     ],
     # Mr. Skellybones
@@ -472,12 +510,77 @@ boss_attacks = [
             "nerves_effect": 15,
             "to_player": False,
             "super_success": ['"You know what?"', '"I will just commit fraud"', '"I will not stand for market instability"', "He shurgs and does a bunch of stuff you don't understand."],
-            'success': ['Midbattle, he sells his stocks in a major company, gaining millions of dollars to afford healthcare.', 
+            'success': ['He sells his stocks in a major company, gaining millions of dollars to afford healthcare.', 
             'He is significantly more healthy.'],
-            "failure": ['Midbattle, he tries to sell his stocks in a major company but sadly the companies stock price was falling, so he only got half as much money as he wanted.'],
+            "failure": ['He tries to sell his stocks in a major company but the companies stock price was falling, so he only got a quarter as much money as he wanted.'],
             "super_failure": ['He decided to invest in crypto currency.'],
             'is_item': False
         }
+    ],
+    # Santa Claus
+    [
+        {
+            "name": "Christmas MegaBlast",
+            "health_effect": -30,
+            "nerves_effect": 0,
+            "to_player": True,
+            "super_success": ['"Hohoho!"', '"I did not want to go this far but I will if I must."', '"I CALL UPON EVERY GREAT POWERS BEFORE I,"',
+            '"FROM FATHER CHRISTMAS TO KRIS KRINGLE,"', '"I HARNESS THEE FOR A..."', '"CHRISTMAS"', '"ULTRA"', '"BLAST!"', "For a moment, all you can see is red, green, and white.",
+            'Once the blast is over, you notice a several meter wide whole blasted through the wall behind you with a trail spanning to the horizon.', 'How did you even survive that?',
+            'Do you have plot armor or something?'],
+            'success': ['Santa harnesses his Christmas Spirit and does his iconic and famous Christmas MegaBlast,', 
+            'Completely blinding you in its brilliance.', 'Oh, classic Santa!'],
+            "failure": ['Santa attempts to harness his Christmas Spirit but it seems that the stress of preparing for Christmas has gotten to him.', 'His spirit is considerably weaker.'],
+            "super_failure": ['"Hohoho!"', '"I wanted to go this far as much as you but you leave me no choice"', '"CHRISTMAS"', '"SUPER"', '"BLA-"', 'His hat falls off his head, cancelling his attack',
+            '"Oh! Pardon me!"'],
+            'is_item': False
+        },
+        {
+            "name": "Intimidation",
+            "health_effect": 0,
+            "nerves_effect": -20,
+            "to_player": True,
+            "super_success": ['"Hohoho!"', '"I did not want to go this far but I will if I must."', '"I CALL UPON EVERY GREAT POWERS BEFORE I,"',
+            '"FROM FATHER CHRISTMAS TO KRIS KRINGLE,"', '"I HARNESS THEE FOR A..."', '"CHRISTMAS"', '"ULTRA"', '"BLAST!"', "For a moment, all you can see is red, green, and white.",
+            'Once the blast is over, you notice a several meter wide whole blasted through the wall behind you with a trail spanning to the horizon.', 'How did you even survive that?',
+            'Do you have plot armor or something?'],
+            'success': ['Santa pulls out his naughty list and he writes a name in it.', 'You stress out, worried that he put your name on the list.'],
+            "failure": ["Santa begins to charge up a Christmas MegaBlast and you panic for a little bit, until you realize he's been charging it for longer than usual.", 
+            'So you  shrug, walk up, and knock his hat off his head.'],
+            "super_failure": ['"Why you have tested me patience for too long!"', '"I am going to say a horrible thing!"', '"You will not even believe what I am about to say!"',
+            'You stress out, worried that Santa is going to destroy his precious, pure image. You brace for the worst.', '"YOU ARE SUBPAR IN SOME OF YOUR HOBBIES!"', 
+            '"do not worry though, practice makes perfect"', '"BUT YOU WILL HAVE TO PRACTICE A LOT!"', 'Santa smirks, proud of his own audacity.'],
+            'is_item': False
+        }
+    ],
+    # Zeep Vorp
+    [
+        {
+            'name': 'Proton Charges',
+            'health_effect': -35,
+            'nerves_effect': 0,
+            'to_player': True,
+            "super_success": ['You notice a $20 at your feet so you pick it up, feeling lucky as ever,', "just to realize that you actually picked up a Proton Charge.",
+            '...', 'In retrospect,', "I'm not sure how you made that mistake."],
+            'success': ['Using the ever-so-lovely power of nuclear fission, Zeep sets off several Proton Charges at your feet.', "You know, the Zeep I know would've used Neutron Blasts.",
+            "I should've known he would go down this path from the moment I saw that first charge."],
+            "failure": ['Zeep throws several Proton Charges at your feet, but it seems he set them to "Inconvinence" instead of "Illegal in All Places except American Australia"'],
+            "super_failure": ["Zeep Vorp being the massive stinky stupid idiot he is forgets to activate his Proton Charges when he throws them at us because he's stupid and dumb."],
+            'is_item': False
+        },
+        {
+            'name': 'Regenerate',
+            'health_effect': 20,
+            'nerves_effect': -15,
+            'to_player': True,
+            "super_success": ['Zeep somehow created a better, more evolved version of himself who kicked him out of the mech, fixed the mech, and took charge himself.'],
+            'success': ['In what I can only describe as a crime against biology,', 'Zeep duplicates himself several times to tend to him and fix his ship as he pilots it.'],
+            "failure": ["Zeep duplicates himself several times to tend to him and fix his ship, but apparently it's hard to repair a flying mech's external wounds, as it is flying,",
+            'So nothing really gets done.', "They were able to stick a princess-branded bandages on it so I'm sure it's fine."],
+            "super_failure": ['In what I can only describe as an attempted crime against biology,', 'Zeep duplicates himself several times to tend to his own wounds and fix his ship as he pilots it...',
+            'but he forgot to duplicate his conscious so the clones just run off on their own endeavors.', "I hope they're okay, wherever they went."],
+            'is_item': False
+        },
     ]
 ]
 bosses = [
@@ -588,13 +691,84 @@ bosses = [
         "is_defeated": False,
         'encountered': False,
         'level_last_encountered': 0
+    },
+    {
+        "name": "Santa Claus",
+        "health": 150,
+        "nerves": 100,
+        "max_health": 100,
+        "max_nerves": 100,
+        "min_nerves": 10,
+        'def_health': 100,
+        'def_nerves': 100,
+        "victory_item": items[9],
+        "location": 4,
+        'index': 3,
+
+        "intro": ['H-Hey,', 'so,', 'maybe it was a bad idea to come to the north pole...', 'in nothing but a polo and jeans...', 'in the winter.', 
+        "E-even I-I'm cold, and I don't have any p-physical feeling.", 'Anyway, you come upon a factory in the middle of no-where.', "Santa's Workshop.",
+        'Santa is not a man to triffle with, especially since Christmas is coming close.', "It may be best if we hold off on coming here unti-",
+        "...", "...", "...", '"Hey!"', '"Hey!"', '"HEY!"', 'Wait, what happened?!', 'Oh, so, you wake up, bound to an armchair near a fireplace with a small elf in a suit and green hat.', 
+        '"Mind tellin us what ya were doin so close to the Workshop?"', "You try to show her a page of the constitution but it seems that you're bound by present wrapping.",
+        "Oh,", "you're only bound by present wrapping.", "You stand up, destroying all of the wrapping.", '"Hey! You stand when I tell ya to stand!"', 
+        'You show her a page of the constitution', '"The constitution, huh? Well, we have no idea where any page could be, so you are wasting ya time here!"',
+        'As she says that, Santa himself walks in laughing while holding a page of the constitution in his hand.', "She immediately scurries off, leaving you alone with ol' Saint Nick",
+        '"Hohoho! It seems like you are lost! Allow me to show you out!"', 
+        'You immediately try to grab the page out of his hand but he effortlessly tosses you across the room, into a Christmas tree.', "Welp, seems like we're fighting Santa Claus.", 'Oops.'],
+
+        "boss_victory_text": ['"Hohoho! It seems like all you will be getting this Christmas is a lump of coal!"', 
+        "Hint: Santa is a tank when it comes to health and damage, so try to make him nervous so that he can't attack you."],
+
+        "boss_defeat_text": ['"Ho... ho... ho..."', '"You are very skilled."', 'Santa then falls asleep on the armchair.', 
+        '"Seems like the fight exhausted the old man." says the elf, back after the battle.', '"Look, we cannot afford these complications so close to Christmas."',
+        '"So just take the page and whatever else ya need and never come back here again. Ya hear me?"', "You nod and grab the page from Santa's hand.", 
+        'As you take the page, the hat starts glowing brightly', '"Oh my... there is no way... it seems like the hat is callin to ya..."', 
+        'You shrug and walk away but the hat gently floats on your head', '"How is that even... wow, what can I say..."', 'You give a thumbs up and leave.'],
+
+        "is_defeated": False,
+        'encountered': False,
+        'level_last_encountered': 0
+    },
+    {
+        "name": "Veep Zorp",
+        "health": 100,
+        "nerves": 120,
+        "max_health": 100,
+        "max_nerves": 120,
+        "min_nerves": 10,
+        'def_health': 100,
+        'def_nerves': 120,
+        "location": 4,
+        'index': 4,
+        "intro": ['4 pages down, 1 more to go.', 'Where could it be though?', 'We looked almost everywhere!', 'Maybe we have to double check British Texas?',
+        'We did get very busy with that horde back there.', '...', 'Oh...', 'oh my!', 'You hear a deafening humming noise behind you.', 
+        'You turn around and you see large flying mech piloted by none other than...', 'Veep Zorp!', "Oh, thank goodness, he's here to help!", 'BLAM!', 'POW!', 'ZOOM!',
+        'Veep Zorp is...', 'firing at us?!', "You wave to Veep Zorp trying to signal to him that you're his friend but he won't listen.", 
+        'After doding his attacks for a while, he finally stops.', '"Vorleem..."', 'Yeah, he better be!', '"Vop xansti twop zoap"', 'What?!', 'He wants the pages too?!', 
+        '"Verloo zat bes veem mattz"', '"Rlaty vrium skizt"', '"Lito vem plee tros vetr"', 'Are you kidding?!', 
+        'I cannot believe that he was originally planning to destory us with the proton charge, but he changed his mind once he saw us take down our first boss so that we can gather the pages,'
+        'just for him to take it!', "I can't believe he would do that!", '"Ves votto plam!"', '"Tulap!"'],
+
+        "boss_victory_text": ['"Veeleem dorp... vine vot"', 
+        "Hint: Remember all of what you learned"],
+
+        "boss_defeat_text": ['Wow...', "That was something... wasn't it?", 'Oh, look, in his hand,', 'he had the last page!', "You take the page out of his hand and you nod.",
+        "I can't believe this quest already over.", 'That was what?', '3 days?', "Well, I suppose that now we have the pages, we should go and return them to where they belong."],
+
+        "is_defeated": False,
+        'encountered': False,
+        'level_last_encountered': 0
     }
 ]
 
 def Dialogue(dialogue):
+
+    i = 0
+
     if not print_all_dialogue:
         for line in dialogue:
-            input(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
+            i += 1
+            input(f'{line} ({i}/{len(dialogue)})')
     else:
         for line in dialogue:
             print(f'{line} ({dialogue.index(line) + 1}/{len(dialogue)})')
@@ -974,7 +1148,7 @@ def Fight(boss):
                 inventory.append(saved_item)            
             fight_finished = True
         # Victory Sequence
-        elif boss['health'] <= 0:
+        elif boss['health'] <= 0 and boss['index'] != 4:
 
             if not monologue_complete:
                 Dialogue(boss['boss_defeat_text'])
@@ -984,7 +1158,7 @@ def Fight(boss):
                 
                 player_stats['pages'] += 1
 
-                Dialogue([f'You now have {player_stats['pages']}/6 pages!'])
+                Dialogue([f'You now have {player_stats['pages']}/5 pages!'])
                 
                 # Give Player Reward Item
                 inventory.append(boss['victory_item'])
@@ -999,7 +1173,7 @@ def Fight(boss):
                         continue
                     case 0:
                         player_stats['strength'] += 1
-                        player_stats['attack_potency'] += (player_stats["strength"]) * 0.1
+                        player_stats['attack_potency'] += (player_stats["strength"]) * 0.15
                         Dialogue([f'Your strength is now at Level {player_stats['strength']}!'])
                     case 2:
                         player_stats['durability'] += 1
@@ -1007,12 +1181,11 @@ def Fight(boss):
                         Dialogue([f'Your durability is now at Level {player_stats['durability']}!'])
                     case 1:
                         player_stats['bravery'] += 1
-                        player_stats['max_nerves'] += (player_stats["bravery"]) * 5
-                        player_stats['min_nerves'] += (player_stats['bravery']) * 5
+                        player_stats['max_nerves'] += (player_stats["bravery"]) * 10
                         Dialogue([f'Your bravery is now at Level {player_stats['bravery']}!'])
                     case 3:
                         player_stats['recovery'] += 1
-                        player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.1
+                        player_stats['recovery_potency'] += (player_stats["recovery"]) * 0.15
                         Dialogue([f'Your recovery stat is now at Level {player_stats['recovery']}!'])
                 stat_boosted = True
             
@@ -1039,6 +1212,11 @@ def Fight(boss):
             boss['is_defeated'] = True
             fight_finished = True
 
+        elif boss['health'] <= 0 and boss['index'] == 4:
+            Dialogue(boss['boss_defeat_text'])
+            boss['is_defeated'] = True
+            fight_finished = True
+
 if not skip_intro:
 
     input(game_title_screen)
@@ -1058,7 +1236,22 @@ if not skip_intro:
 
 Fight(bosses[0])
 
+want_final_fight = True
+
 while True:
+
+    if player_stats['pages'] == 4 and want_final_fight:
+        match ShowOptions(['Yes', 'No'], 'You are approaching the final boss. It is HIGHLY recommended to get ALL items availible. Do you wish to continue and fight the final boss?', False):
+            case 1:
+                want_final_fight = False
+                continue
+            case 0:
+                Fight(bosses[4])
+                if bosses[4]['is_defeated']:
+                    Dialogue('End')
+                    break
+                else:
+                    continue
 
     if player_stats['position'] != 0:
         for boss in bosses:
@@ -1077,8 +1270,13 @@ while True:
                 input('Press anything to continue')
 
     print(f'You are at {locations[player_stats['position']]}')
+    
+    if player_stats['pages'] != 4:
+        menu_options = ['Move', 'Stats', 'Inventory', 'Attacks', 'Settings']
+    else:
+        menu_options = ['Move', 'Stats', 'Inventory', 'Attacks', 'Settings', 'Fight Final Boss']
 
-    match ShowOptions(['Move', 'Stats', 'Inventory', 'Attacks', 'Settings'], 'What would you like to do? ', False):
+    match ShowOptions(menu_options, 'What would you like to do? ', False):
         case 0:
             try:
                 print(f"Since you're currently at {locations[player_stats['position']]}, you can go to: ")
@@ -1091,7 +1289,7 @@ while True:
             print(f"-=-=-=-Your Stats-=-=-=-")
             print(f"Health: {player_stats["health"]}/{player_stats["max_health"]} \nNerves: {player_stats["nerves"]}/{player_stats["max_nerves"]} \nAttack Potency: {player_stats["attack_potency"]}x \nRecovery Potency: {player_stats['recovery_potency']}")
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
-            print(f'Pages: {player_stats['pages']}/{player_stats['pages']}')
+            print(f'Pages: {player_stats['pages']}/5')
             print(f'Level: {player_stats['level']}')
             input('Type anything to go back. ')
         case 2:
@@ -1109,5 +1307,8 @@ while True:
                     print_all_dialogue = False
                 else:
                     print_all_dialogue = True
+        case 5:
+            want_final_fight = True
+            continue
     
     
