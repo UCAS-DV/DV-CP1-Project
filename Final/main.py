@@ -509,7 +509,7 @@ boss_attacks = [
     [
         {
             "name": "Christmas MegaBlast",
-            "health_effect": -30,
+            "health_effect": -25,
             "nerves_effect": 0,
             "to_player": True,
             "super_success": ['"Hohoho!"', '"I did not want to go this far but I will if I must."', '"I CALL UPON EVERY GREAT POWERS BEFORE I,"',
@@ -972,8 +972,8 @@ def TakeAction(action, nerves_value, from_player, boss):
         inventory.pop(inventory.index(action))
     # If the action was not from a player, it will be handled as an item and use the boss's pool of attacks
     else:
-        health_effect = math.floor(action['health_effect'] * (nerve_multipler + (0.15 * player_stats['level'])))
-        nerves_effect = math.floor(action['nerves_effect'] * (nerve_multipler + (0.15 * player_stats['level'])))
+        health_effect = math.floor(action['health_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
+        nerves_effect = math.floor(action['nerves_effect'] * (nerve_multipler + (0.05 * player_stats['level'])))
 
         if action['to_player']:
             player_stats['health'] += health_effect
@@ -1024,11 +1024,11 @@ def Fight(boss):
     saved_inventory = []
     
     # This resets the boss's health after a game over and makes sure that the boss's health is properly scaled with player level
-    boss['health'] = boss['def_health'] + (20 * player_stats['level'])
+    boss['health'] = boss['def_health'] + (10 * player_stats['level'])
     boss['nerves'] = boss['def_nerves']
     # This ensures that the boss's max health doesn't infinitely stack
     if not boss['encountered'] or boss['level_last_encountered'] != player_stats['level']:
-        boss['max_health'] += 20 * player_stats['level']
+        boss['max_health'] += 10 * player_stats['level']
         boss['level_last_encountered'] = player_stats['level']
     # This ensures that the Metaphor for Capitalism doesn't start at max health
     if boss['index'] != 2:
@@ -1243,7 +1243,8 @@ while True:
                               '"The hat called to ya!"', 'You shrug.', '"Wow... thank ya..."', '"Raaaah. Honored one, is that you?"', "Suddenly, Mr. Skellybones interjects.", '"I have come to thank you, on behalf of the monsters of Spookyland"',
                               '"We would not be thriving without your advocacy."', '"HELLO! I_THANK_YOU = TRUE. RATINGS = 10000!" says Super-Robo-Caeser.', '"Hello, dear intern, the Royal Family of North Dakota wishes to congratulate you on this incredible achievement." says a representative from North Dakota',
                               'Hey, I thank you too.', "You've probably showed me some the greates excitement a voice in someone's head can ever have.", 'Thank you.'
-                              'And so, the fireworks shine brighter than ever,', 'and even better,', 'after the show you were bestowed the greatest honor an unpaid intern can get...', 'a wage of $8 an hour.', ])
+                              'And so, the fireworks shine brighter than ever,', 'and even better,', 'after the show you were bestowed the greatest honor an unpaid intern can get...', 'a wage of $8 an hour.', 
+                              'The End.'])
                     break
                 else:
                     continue
