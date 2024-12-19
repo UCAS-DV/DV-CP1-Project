@@ -560,7 +560,7 @@ boss_attacks = [
             'name': 'Regenerate',
             'health_effect': 20,
             'nerves_effect': -15,
-            'to_player': True,
+            'to_player': False,
             "super_success": ['Zeep somehow created a better, more evolved version of himself who kicked him out of the mech, fixed the mech, and took charge himself.'],
             'success': ['In what I can only describe as a crime against biology,', 'Zeep duplicates himself several times to tend to him and fix his ship as he pilots it.'],
             "failure": ["Zeep duplicates himself several times to tend to him and fix his ship, but apparently it's hard to repair a flying mech's external wounds, as it is flying,",
