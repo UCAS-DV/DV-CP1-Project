@@ -452,7 +452,7 @@ boss_attacks = [
         },
         {
             "name": "Got Milk?",
-            "health_effect": 15,
+            "health_effect": 20,
             "nerves_effect": 0,
             "to_player": False,
             "super_success": ['He reaches behinda grave and grabs a jug of Clarkplace(TM) milk.', '"Raaaah. Only Clarkplace Milk(TM) makes feel this good."', 
@@ -683,9 +683,9 @@ bosses = [
     {
         "name": "Santa Claus",
         "health": 150,
-        "nerves": 100,
+        "nerves": 125,
         "max_health": 100,
-        "max_nerves": 100,
+        "max_nerves": 125,
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 100,
