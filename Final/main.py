@@ -683,9 +683,9 @@ bosses = [
     {
         "name": "Santa Claus",
         "health": 150,
-        "nerves": 125,
+        "nerves": 130,
         "max_health": 100,
-        "max_nerves": 125,
+        "max_nerves": 130,
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 100,
