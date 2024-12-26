@@ -2,9 +2,9 @@ import random
 import math
 
 # Debug Values. Do not apply to game.
-skip_intro = False
-debug_attacks = False
-print_all_dialogue = False
+skip_intro = True
+debug_attacks = True
+print_all_dialogue = True
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
@@ -1106,11 +1106,7 @@ def Fight(boss):
                         boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                         rerolls += 1
                         continue
-
-                    if player_attacks[player_action]["nerves_effect"] < 0 and not player_attacks[player_action]['to_player'] and boss_attack['nerves_effect'] <= 0:
-                        boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
-                        rerolls += 1
-                        continue
+                    
                     if player_stats['nerves'] <= player_stats['max_nerves'] / 2 and boss_attack['health_effect'] >= 0:
                         boss_attack = boss_attacks[boss['index']][random.randint(0, len(boss_attacks[boss['index']]) - 1)]
                         rerolls += 1
