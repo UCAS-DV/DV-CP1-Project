@@ -715,7 +715,7 @@ bosses = [
         'level_last_encountered': 0
     },
     {
-        "name": "Veep Zorp",
+        "name": "Zeep Vorp",
         "health": 100,
         "nerves": 120,
         "max_health": 100,
@@ -727,8 +727,8 @@ bosses = [
         'index': 4,
         "intro": ['4 pages down, 1 more to go.', 'Where could it be though?', 'We looked almost everywhere!', 'Maybe we have to double check British Texas?',
         'We did get very busy with that horde back there.', '...', 'Oh...', 'oh my!', 'You hear a deafening humming noise behind you.', 
-        'You turn around and you see large flying mech piloted by none other than...', 'Veep Zorp!', "Oh, thank goodness, he's here to help!", 'BLAM!', 'POW!', 'ZOOM!',
-        'Veep Zorp is...', 'firing at us?!', "You wave to Veep Zorp trying to signal to him that you're his friend but he won't listen.", 
+        'You turn around and you see large flying mech piloted by none other than...', 'Zeep Vorp!', "Oh, thank goodness, he's here to help!", 'BLAM!', 'POW!', 'ZOOM!',
+        'Zeep Vorp is...', 'firing at us?!', "You wave to Zeep Vorp trying to signal to him that you're his friend but he won't listen.", 
         'After doding his attacks for a while, he finally stops.', '"Vorleem..."', 'Yeah, he better be!', '"Vop xansti twop zoap"', 'What?!', 'He wants the pages too?!', 
         '"Verloo zat bes veem mattz"', '"Rlaty vrium skizt"', '"Lito vem plee tros vetr"', 'Are you kidding?!', 
         'I cannot believe that he was originally planning to destory us with the proton charge, but he changed his mind once he saw us take down our first boss so that we can gather the pages,'
