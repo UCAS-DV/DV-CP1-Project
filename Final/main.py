@@ -332,7 +332,7 @@ reward_attacks = [
         "name": "Funny Bone Blow",
         'description': "HEY! This is no laughing matter!",
         "health_effect": -20,
-        "nerves_effect": -10,
+        "nerves_effect": 0,
         "to_player": False,
         "super_success": ["You look at your opponent with a deadpan expression", 'You walk up to your opponent, menacingly and your mere aura brings them to your knees.',
         "You lightly taps their funny bone.", "He looks at you confused but suddenly... what feels like a jolt of lightening traverses through their arm and you can infer the rest"],
@@ -360,7 +360,7 @@ reward_attacks = [
     {
         "name": "Intimidating Christmas MegaBlast",
         'description': "You're no where near cool enough to actually preform a Christmas MegaBlast but you can start one up to scare your opponents",
-        "health_effect": -10,
+        "health_effect": 0,
         "nerves_effect": -25,
         "to_player": False,
         "super_success": ['You begin to charge up a Christmas MegaBlast.', 'The charged blast is significantly more powerful than you projected.', "You can likely see it from space.",
