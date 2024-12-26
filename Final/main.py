@@ -2,9 +2,9 @@ import random
 import math
 
 # Debug Values. Do not apply to game.
-skip_intro = True
-debug_attacks = True
-print_all_dialogue = True
+skip_intro = False
+debug_attacks = False
+print_all_dialogue = False
 
 game_title_screen = '''
 -~-~-~-~-~-~Quest for the Country!-~-~-~-~-~-~
