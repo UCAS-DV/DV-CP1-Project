@@ -556,7 +556,7 @@ boss_attacks = [
         {
             'name': 'Regenerate',
             'health_effect': 20,
-            'nerves_effect': -15,
+            'nerves_effect': 15,
             'to_player': False,
             "super_success": ['Zeep somehow created a better, more evolved version of himself who kicked him out of the mech, fixed the mech, and took charge himself.'],
             'success': ['In what I can only describe as a crime against biology,', 'Zeep duplicates himself several times to tend to him and fix his ship as he pilots it.'],
@@ -716,10 +716,10 @@ bosses = [
     },
     {
         "name": "Zeep Vorp",
-        "health": 100,
-        "nerves": 120,
-        "max_health": 100,
-        "max_nerves": 120,
+        "health": 120,
+        "nerves": 130,
+        "max_health": 120,
+        "max_nerves": 130,
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 120,
