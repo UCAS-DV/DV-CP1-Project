@@ -113,8 +113,10 @@ player_stats = {
     'recovery_potency': 1,
     'pages': 0,
     'level': 0,
-    'position': 0
+    'position': 0,
+    'score': 0
 }
+
 player_attacks = [
     {
         "name": "Uncouth Declaration",
@@ -571,6 +573,7 @@ boss_attacks = [
 bosses = [
     {
         "name": "The Voice In Your Head",
+
         "health": 50,
         "nerves": 100,
         "max_health": 50,
@@ -578,9 +581,13 @@ bosses = [
         "min_nerves": 25,
         'def_health': 50,
         'def_nerves': 100,
+        
         "victory_item": items[0],
+        'score': 100,
+
         "location": 0,
         'index': 0,
+
         "intro": ["...", 'Wait a second...', "You don't know how to fight, do you?", "Well, these guys are not going to willing give up their pages so let's learn.",
         "I'm sure you're already familiar with how health works, but people often underestimate how important it is to keep a cool head.", 
         "You see, if you let your nerves get too low, you're attacks' effectiveness will likely be greatly reduced, or worse, they'll completely fail.",
@@ -610,6 +617,7 @@ bosses = [
     },
     {
         "name": "Mr. Skellybones",
+
         "health": 60,
         "nerves": 100,
         "max_health": 60,
@@ -617,7 +625,10 @@ bosses = [
         "min_nerves": 25,
         'def_health': 80,
         'def_nerves': 100,
+
         "victory_item": items[1],
+        'score': 500,
+
         "location": 1,
         'index': 1,
 
@@ -646,6 +657,7 @@ bosses = [
     },
     {
         "name": "A Very Deep and Subtle Metaphor for Capitalism that Only Intellectuals",
+
         "health": 60,
         "nerves": 80,
         "max_health": 120,
@@ -653,7 +665,10 @@ bosses = [
         "min_nerves": 15,
         'def_health': 50,
         'def_nerves': 80,
+
         "victory_item": items[4],
+        'score': 300,
+
         "location": 6,
         'index': 2,
 
@@ -679,6 +694,7 @@ bosses = [
     },
     {
         "name": "Santa Claus",
+
         "health": 150,
         "nerves": 130,
         "max_health": 100,
@@ -686,7 +702,10 @@ bosses = [
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 100,
+
         "victory_item": items[8],
+        'score': 500,
+
         "location": 4,
         'index': 3,
 
@@ -716,6 +735,7 @@ bosses = [
     },
     {
         "name": "Zeep Vorp",
+
         "health": 120,
         "nerves": 130,
         "max_health": 120,
@@ -723,6 +743,9 @@ bosses = [
         "min_nerves": 10,
         'def_health': 100,
         'def_nerves': 120,
+
+        'score': 800,
+
         "location": 4,
         'index': 4,
         "intro": ['4 pages down, 1 more to go.', 'Where could it be though?', 'We looked almost everywhere!', 'Maybe we have to double check British Texas?',
@@ -767,7 +790,7 @@ def ShowOptions(choices, selection_prompt, display_only):
     while not input_taken:
         for choice in choices:
 
-            # Checks if the choice has an health_effesct because only items and attacks have them, so this is to check if the choice is an attack or item
+            # Checks if the choice has an health_effect because only items and attacks have them, so this is to check if the choice is an attack or item
             if type(choice) is dict:
 
                 print(f'{choices.index(choice)}. {choice['name']}')
@@ -853,7 +876,7 @@ def RollNerveEffect(nerves):
         if rolled_number > (nerves * 1.5):
             return 0
         else:
-            return 0.25
+            return 0.5
     else:
         if rolled_number < (nerves * 0.1):
             return 1.5
@@ -1009,6 +1032,24 @@ def TakeAction(action, nerves_value, from_player, boss):
     if boss['nerves'] > boss['max_nerves']: boss['nerves'] = boss['max_nerves']
     elif boss['nerves'] < boss['min_nerves']: boss['nerves'] = boss["min_nerves"] 
 
+def GameOver(boss):
+    player_stats["health"] = player_stats['max_health']
+    player_stats['nerves'] = player_stats['max_nerves']
+    boss['health'] = boss['def_health']
+    boss['nerves'] = boss['def_nerves']
+    Dialogue(['-!-!-!-GAME OVER-!-!-!-'] + boss['boss_victory_text'] + ["Let's run that back..."])
+
+def GiveReward(boss):         
+    player_stats['pages'] += 1
+    Dialogue([f'You now have {player_stats['pages']}/5 pages!'])
+                
+    # Give Player Reward Item
+    inventory.append(boss['victory_item'])
+    input('You have a new item! (1/1)')
+    input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
+    rewards_recieved = True
+
+
 def Fight(boss):
     turn = -1
     fight_finished = False
@@ -1116,17 +1157,20 @@ def Fight(boss):
                 turn += 1
         # Game Over Sequence
         elif player_stats['health'] <= 0:
-            player_stats["health"] = player_stats['max_health']
-            player_stats['nerves'] = player_stats['max_nerves']
-            boss['health'] = boss['def_health']
-            boss['nerves'] = boss['def_nerves']
-            Dialogue(['-!-!-!-GAME OVER-!-!-!-'] + boss['boss_victory_text'] + ["Let's run that back..."])
+           
+            GameOver(boss)
+            
+            # If the player is on the tutorial boss, automatically restart the boss fight
             if player_stats['position'] == 0:
                 turn = -1
                 continue
+
             player_stats['position'] = 0
+
+            # Restock inventory with all lost items
             for saved_item in saved_inventory:
-                inventory.append(saved_item)            
+                inventory.append(saved_item)
+
             fight_finished = True
         # Victory Sequence
         elif boss['health'] <= 0 and boss['index'] != 4:
@@ -1136,17 +1180,9 @@ def Fight(boss):
                 monologue_complete = True
 
             if rewards_recieved == False:
-                
-                player_stats['pages'] += 1
-
-                Dialogue([f'You now have {player_stats['pages']}/5 pages!'])
-                
-                # Give Player Reward Item
-                inventory.append(boss['victory_item'])
-                input('You have a new item! (1/1)')
-                input(ShowOptions([boss['victory_item']], 'Test', display_only=True))
+                GiveReward(boss)
                 rewards_recieved = True
-
+                
             if not stat_boosted:
                 # Have player choose what stat to level up
                 match ShowOptions([f'Strength: {player_stats["strength"]}', f'Bravery: {player_stats['bravery']}', f'Durability: {player_stats['durability']}', f'Recovery: {player_stats['recovery']}'], 'Which stat do you wish to level up? ', False):
@@ -1190,11 +1226,24 @@ def Fight(boss):
             # Reset Player health and nerves and mark boss as defeated
             player_stats["health"] = player_stats['max_health']
             player_stats['nerves'] = player_stats['max_nerves']
+
+            added_score = round((boss['score'] * (1.0 - ((0.01 * turn) - (0.2 * (player_stats['health']/player_stats['max_health']))))))
+
+            player_stats['score'] += added_score
+
+            input(f'+{added_score} score!')
+
             boss['is_defeated'] = True
             fight_finished = True
 
         elif boss['health'] <= 0 and boss['index'] == 4:
+            added_score = round((boss['score'] * (1.0 - ((0.01 * turn) - (0.2 * (player_stats['health']/player_stats['max_health']))))))
+
+            player_stats['score'] += added_score
+
+            input(f'+{added_score} score!')
             Dialogue(boss['boss_defeat_text'])
+
             boss['is_defeated'] = True
             fight_finished = True
 
@@ -1234,10 +1283,11 @@ while True:
                               'You turn around, confused to see the elf that captured you earlier.', '"The fat man could not attend so I am here to represent him"', '"He says sorry. It was not in the spirit of Christmas to try to hold the country hostage."',
                               '"Thank ya. It seems like after yer fight with him, he has been a lot kinder."', 'You nod and then remember the hat you took from him', 'You shrug and toss it to her', '"Oh! Ya do not have to do this"',
                               '"The hat called to ya!"', 'You shrug.', '"Wow... thank ya..."', '"Raaaah. Honored one, is that you?"', "Suddenly, Mr. Skellybones interjects.", '"I have come to thank you, on behalf of the monsters of Spookyland"',
-                              '"We would not be thriving without your advocacy."', '"HELLO! I_THANK_YOU = TRUE. RATINGS = 10000!" says Super-Robo-Caeser.', '"Hello, dear intern, the Royal Family of North Dakota wishes to congratulate you on this incredible achievement." says a representative from North Dakota',
+                              '"We would not be thriving without your advocacy."', '"HELLO! I_THANK_YOU = TRUE. RATINGS = 10000!" says Super-Robo-Caeser.', '"Hello, dear intern, the Royal Family of North Dakota wishes to congratulate you on this incredible achievement.", says a representative from North Dakota', 
                               'Hey, I thank you too.', "You've probably showed me some the greates excitement a voice in someone's head can ever have.", 'Thank you.'
                               'And so, the fireworks shine brighter than ever,', 'and even better,', 'after the show you were bestowed the greatest honor an unpaid intern can get...', 'a wage of $8 an hour.', 
                               'The End.'])
+                    input(f'Final Score: {player_stats['score']}')
                     break
                 else:
                     continue
@@ -1280,6 +1330,7 @@ while True:
             print(f"Minimum Nerves: {player_stats['min_nerves']} \nStrength: {player_stats["strength"]} \nBravery: {player_stats["bravery"]} \nDurability: {player_stats['durability']} \nRecovery: {player_stats['recovery']}")
             print(f'Pages: {player_stats['pages']}/5')
             print(f'Level: {player_stats['level']}')
+            print(f'Score: {player_stats['score']}')
             input('Type anything to go back. ')
         case 2:
             ShowOptions(inventory, "Which item do you wish to use (Enter Number)? ", True)
