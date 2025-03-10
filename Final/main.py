@@ -901,7 +901,7 @@ def TakeAction(action, nerves_value, from_player, boss):
             case 0:
                 effectiveness = ['Action was a complete failure.']
                 Dialogue(user_text + action['super_failure'] + effectiveness)
-            case 0.25:
+            case 0.5:
                 effectiveness = ['Action was a ineffective.']
                 Dialogue(user_text + action['failure'] + effectiveness)         
             case 1:
