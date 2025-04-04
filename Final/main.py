@@ -1287,6 +1287,7 @@ while True:
                               'Hey, I thank you too.', "You've probably showed me some the greates excitement a voice in someone's head can ever have.", 'Thank you.'
                               'And so, the fireworks shine brighter than ever,', 'and even better,', 'after the show you were bestowed the greatest honor an unpaid intern can get...', 'a wage of $8 an hour.', 
                               'The End.'])
+                    input(f'Created by Darius Vaiaoga')
                     input(f'Final Score: {player_stats['score']}')
                     break
                 else:
