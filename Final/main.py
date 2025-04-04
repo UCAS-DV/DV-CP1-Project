@@ -656,7 +656,7 @@ bosses = [
         'level_last_encountered': 0
     },
     {
-        "name": "A Very Deep and Subtle Metaphor for Capitalism that Only Intellectuals",
+        "name": "A Very Deep and Subtle Metaphor for Capitalism that Only Intellectuals Understand",
 
         "health": 60,
         "nerves": 80,
